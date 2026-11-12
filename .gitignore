@@ -1,0 +1,26 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.ipynb_checkpoints/
+work/
+wandb/
+runs/
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.npy
+*.npz
+data/*
+!data/README.md
+checkpoints/*
+!checkpoints/README.md
+# Existing personal/course archives remain local unless explicitly reviewed.
+docs/ADRec/
+docs/AgMMU/
+docs/Gelato/
