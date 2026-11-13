@@ -1,0 +1,110 @@
+{
+  "kind": "CPU integration smoke check, not benchmark reproduction",
+  "users": 9,
+  "hidden_size": 16,
+  "diffusion_steps": 4,
+  "steps_per_stage": 2,
+  "dataset_parity": true,
+  "models": {
+    "SASRec+": {
+      "val": {
+        "metrics": {
+          "HR@5": 0.0,
+          "NDCG@5": 0.0,
+          "HR@10": 0.0,
+          "NDCG@10": 0.0,
+          "HR@20": 0.0,
+          "NDCG@20": 0.0
+        },
+        "parity": true,
+        "label_independence": true
+      },
+      "test": {
+        "metrics": {
+          "HR@5": 0.0,
+          "NDCG@5": 0.0,
+          "HR@10": 0.0,
+          "NDCG@10": 0.0,
+          "HR@20": 0.0,
+          "NDCG@20": 0.0
+        },
+        "parity": true,
+        "label_independence": true
+      },
+      "losses": [
+        8.49429988861084,
+        8.464783668518066
+      ]
+    },
+    "ADRec": {
+      "val": {
+        "metrics": {
+          "HR@5": 0.0,
+          "NDCG@5": 0.0,
+          "HR@10": 0.0,
+          "NDCG@10": 0.0,
+          "HR@20": 0.0,
+          "NDCG@20": 0.0
+        },
+        "parity": true,
+        "label_independence": true
+      },
+      "test": {
+        "metrics": {
+          "HR@5": 0.0,
+          "NDCG@5": 0.0,
+          "HR@10": 0.0,
+          "NDCG@10": 0.0,
+          "HR@20": 0.0,
+          "NDCG@20": 0.0
+        },
+        "parity": true,
+        "label_independence": true
+      },
+      "pretrain_losses": [
+        8.556638717651367,
+        8.549230575561523
+      ],
+      "warmup_losses": [
+        8.466463088989258,
+        8.491556167602539
+      ],
+      "finetune_losses": [
+        8.396012306213379,
+        8.41860580444336
+      ],
+      "freeze_unfreeze_verified": true
+    },
+    "GRU4Rec_RecBole_adapter": {
+      "val": {
+        "metrics": {
+          "HR@5": 0.0,
+          "NDCG@5": 0.0,
+          "HR@10": 0.0,
+          "NDCG@10": 0.0,
+          "HR@20": 0.0,
+          "NDCG@20": 0.0
+        },
+        "parity": true,
+        "label_independence": true
+      },
+      "test": {
+        "metrics": {
+          "HR@5": 0.0,
+          "NDCG@5": 0.0,
+          "HR@10": 0.0,
+          "NDCG@10": 0.0,
+          "HR@20": 0.0,
+          "NDCG@20": 0.0
+        },
+        "parity": true,
+        "label_independence": true
+      },
+      "losses": [
+        8.460100173950195,
+        8.467179298400879
+      ],
+      "source": "RecBole v1.2.0 CE adaptation; not verified as the ADRec paper baseline"
+    }
+  }
+}

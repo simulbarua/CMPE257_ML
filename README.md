@@ -10,7 +10,7 @@ We will reproduce ADRec on Amazon Baby Products and compare it with GRU4Rec and 
 2. Complete the data and evaluation agreement before full training.
 3. Bring in and verify the upstream implementation before adding dependencies or training commands.
 
-**Status:** shared data preparation and ranking evaluation are implemented. Model training, Kaggle notebooks, and the application are not implemented yet.
+**Status:** shared data preparation and ranking evaluation are implemented. Local ADRec/SASRec+/GRU4Rec-adapter smoke checks are available; full training launchers, Kaggle notebooks, and the application are not implemented yet.
 
 Start with the [shared-code walkthrough](docs/SHARED_CODE_GUIDE.md).
 
@@ -34,6 +34,8 @@ Start with the [shared-code walkthrough](docs/SHARED_CODE_GUIDE.md).
 - [Authors' implementation](https://github.com/Nemo-1024/ADRec)
 - [Baby data](https://github.com/Nemo-1024/ADRec/tree/main/datasets/data/baby)
 
-ADRec is the authors' work. This repository will contain our reproduction, evaluation, and demo additions. Before importing upstream code, check its license, preserve attribution and notices, and record the exact commit. Do not present imported code as original team work. No upstream implementation or dataset has been copied into this scaffold.
+ADRec is the authors' work. This repository will contain our reproduction, evaluation, and demo additions. Before importing upstream code, check its license, preserve attribution and notices, and record the exact commit. Do not present imported code as original team work. Pinned upstream model sources and licenses are now retained in `third_party/`; the dataset is excluded from Git.
 
 Existing local proposal archives are intentionally not included in the first Git commit; review them before publishing conversation exports or other course documents.
+
+See [local validation](docs/LOCAL_VALIDATION.md) for evaluation parity and model checks.

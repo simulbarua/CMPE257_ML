@@ -3,5 +3,5 @@
   "max_len": 50,
   "seed": 42,
   "metric_ks": [5, 10, 20],
-  "evaluation_batch_size": 128
+  "evaluation_batch_size": 512
 }

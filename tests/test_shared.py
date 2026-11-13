@@ -6,7 +6,7 @@ from pathlib import Path
 from src.data.load import load_dataset, validate_dataset
 from src.data.datasets import SequenceDataset
 from src.evaluation.metrics import RankingMetrics
-from src.evaluation.evaluate import evaluate
+from src.evaluation.evaluate import evaluate_user_weighted as evaluate
 
 DATA = {'train': [[1, 2, 3], [4, 2]], 'val': [[4], [3]], 'test': [[5], [1]]}
 

@@ -1,6 +1,6 @@
 # Shared data and evaluation walkthrough
 
-This branch supplies common infrastructure, not model training or Kaggle notebooks yet. All three notebooks will import these modules after downloading this repository. No GPU is required for the core checks.
+This branch supplies common infrastructure and local model smoke checks, not full training launchers or Kaggle notebooks yet. All three notebooks will import these modules after downloading this repository. No GPU is required for the core checks.
 
 ## 1. `configs/shared.json` — agree on settings
 
@@ -49,27 +49,27 @@ print(batch['input_ids'].shape)  # (128, 50)
 
 The notebook is the launcher. The imported Python modules are downloaded from GitHub along with the notebook's supporting code.
 
-## 5. `src/evaluation/metrics.py` — measure rankings
+## 5. `src/evaluation/upstream_metrics.py` — original HR/NDCG
 
-Computes HR and NDCG for one target per user. Outputs are fractions (0–1), not percentages. It accumulates per-user sums before dividing, so a small final batch does not receive disproportionate weight.
+Retains the authors' metric functions. `metrics.py` and `RankingMetrics` remain only for the optional per-user alternative.
 
-## 6. `src/evaluation/evaluate.py` — same scoring procedure for every model
+## 6. `src/evaluation/evaluate.py` — original evaluation by default
 
-Supply a callable `predict(histories, masks)` that returns scores shaped `[batch_size, max_item_id + 1]`, with column index equal to encoded item ID. For Baby, that is 4,732 columns including padding. Adapters for differently ordered outputs must map columns explicitly.
+`evaluate` now uses upstream CPU torch.topk behavior without added padding/seen-item filtering, averages batch means, and returns percentages rounded to four decimals. Use the same score tensors and batch size as upstream; default batch size is 512. There is no custom tie-breaking.
 
-The evaluator passes ONLY histories and masks to predict, never labels. It excludes item 0, keeps previously seen products as candidates, and breaks equal scores by ascending item ID. Models must score all real products; NaN and infinite candidate scores are rejected.
+Supply `predict(histories, masks)` returning a tensor shaped `[batch, 4732]` for Baby. Preserve score dtype. Do not pass test labels to prediction. The local smoke runner demonstrates how to create ADRec's shifted conditioning sequence from visible history without its held-out answer.
 
 ```python
 from src.evaluation import evaluate
-# predict must be implemented for your trained model first.
-# In that adapter: model.eval(); use torch.inference_mode(); prepare device tensors.
-# Return full-catalog scores, not already sorted product IDs.
 test = SequenceDataset(data, 'test', cfg['max_len'])
+# After implementing the trained-model predict adapter:
 # report = evaluate(test, predict, num_items=4731,
 #                   batch_size=cfg['evaluation_batch_size'], ks=cfg['metric_ks'])
 ```
 
-**Reproduction caveat:** these metrics follow the paper's definitions, but aggregation differs from the inspected upstream trainer, which averages batch means. We also explicitly exclude padding and define deterministic ties. Report the shared protocol and separately run untouched upstream evaluation if exact numerical reproduction is required. Do not claim byte-for-byte parity. Previously seen-item filtering is not implemented as a toggle; any future change must apply to all models.
+The previous behavior is explicitly named `evaluate_user_weighted`: padding excluded, item-ID tie-breaking, user-weighted fractions. Do not mix its output with reproduction percentages.
+
+See [local validation](LOCAL_VALIDATION.md) for actual model smoke checks and limitations.
 
 ## 7. `scripts/check_shared_pipeline.py` and `tests/test_shared.py`
 
@@ -87,8 +87,8 @@ The first checks small examples with known answers. The second verifies the pinn
 - Simul: connect ADRec's training stages and score output to these interfaces.
 - Together: verify one batch per model before full Kaggle runs.
 
-Model architectures, losses, optimizers, checkpoint loading, and the three Kaggle launch notebooks remain separate next steps.
+Local model integration checks now exist, but full training launchers and the three Kaggle notebooks remain next steps.
 
 ## Provenance
 
-Contracts checked against https://github.com/Nemo-1024/ADRec/tree/0a30ef764cd85efa44f884a387198e9bf28c7d4c (src/utils.py, src/trainer.py, src/metrics.py). No upstream model implementation was imported in this change. The provided dataset remains ignored by Git.
+Contracts checked against https://github.com/Nemo-1024/ADRec/tree/0a30ef764cd85efa44f884a387198e9bf28c7d4c (src/utils.py, src/trainer.py, src/metrics.py). Original model sources are now retained under third_party/ADRec with their license and pinned provenance. The provided dataset remains ignored by Git.

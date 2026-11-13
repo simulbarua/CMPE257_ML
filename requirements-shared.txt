@@ -1,3 +1,9 @@
-# Core data and evaluation code uses the Python standard library.
-# Optional src.data.torch_adapter requires PyTorch (normally available on Kaggle).
-# Model-specific dependencies will be specified when training is integrated.
+torch>=2.4
+numpy
+einops
+scipy
+tqdm
+PyYAML
+# Validated local versions recorded in results/local_smoke_environment.txt.
+torchtune==0.4.0
+torchao==0.7.0
