@@ -8,7 +8,7 @@ Each member owns one model. ADRec has multiple training stages, so data coordina
 | T02 | Anusha | Inspect supplied Baby file and loader; document actual counts, ID/padding rules, split semantics and checksums without assuming each split has 11,761 examples | — |
 | T03 | Mahalakshmi | Write shared evaluation protocol: targets, candidate filtering, metrics, seeds, and timing conditions; check agreement with paper/code and document discrepancies | T02 |
 | T04 | Simul | Run ADRec stages; check loaded/frozen/trainable weights, save configuration and checkpoint, report reproducible results | T01–T03 |
-| T05 | Anusha | Verify GRU4Rec implementation source; train on agreed data/protocol; save configuration, checkpoint location and results | T01–T03 |
+| T05 | Anusha | Verify SASRec+ implementation source; train on agreed data/protocol; save configuration, checkpoint location and results | T01–T03 |
 | T06 | Mahalakshmi | Run GRU4Rec + with agreed data/protocol; save configuration, checkpoint location and results | T01–T03 |
 | T07 | All; Mahalakshmi coordinates | Run shared evaluation, repeat agreed seeds, record variability and hardware, produce comparison table; each member validates their own model | T04–T06 |
 | T08 | All | Agree prediction interface; Simul loads ADRec and ranks items, Anusha supplies valid example histories, Mahalakshmi builds UI; jointly test latency and invalid inputs | T04, T02 |
