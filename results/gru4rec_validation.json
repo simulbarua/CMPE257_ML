@@ -1,0 +1,66 @@
+{
+  "reference": "RecBole v1.2.0 class with minimal framework-base harness; not full RecBole pipeline",
+  "reference_parity": [
+    {
+      "layers": 1,
+      "training": false,
+      "scores_loss_gradients_update": "exact match"
+    },
+    {
+      "layers": 1,
+      "training": true,
+      "scores_loss_gradients_update": "exact match"
+    },
+    {
+      "layers": 2,
+      "training": false,
+      "scores_loss_gradients_update": "exact match"
+    },
+    {
+      "layers": 2,
+      "training": true,
+      "scores_loss_gradients_update": "exact match"
+    }
+  ],
+  "device": "cpu",
+  "training_users": 32,
+  "steps": 150,
+  "initial_loss": 8.463730812072754,
+  "final_loss": 0.0007355660200119019,
+  "training_top1_accuracy": 1.0,
+  "checkpoint_predictions": "exact match",
+  "evaluation": {
+    "val": {
+      "users": 32,
+      "protocol": "adrec_upstream",
+      "units": "percent",
+      "metrics": {
+        "HR@5": 0.0,
+        "NDCG@5": 0.0,
+        "HR@10": 2.5641,
+        "NDCG@10": 0.8547,
+        "HR@20": 2.5641,
+        "NDCG@20": 0.8547
+      }
+    },
+    "test": {
+      "users": 32,
+      "protocol": "adrec_upstream",
+      "units": "percent",
+      "metrics": {
+        "HR@5": 0.0,
+        "NDCG@5": 0.0,
+        "HR@10": 0.0,
+        "NDCG@10": 0.0,
+        "HR@20": 0.0,
+        "NDCG@20": 0.0
+      }
+    }
+  },
+  "limitations": [
+    "Small intentional overfit, not evidence of generalization",
+    "No Kaggle GPU check",
+    "ADRec paper exact GRU4Rec setup remains unknown",
+    "One final CE target per training sequence; no automatic prefix expansion"
+  ]
+}

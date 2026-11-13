@@ -1,0 +1,9 @@
+torch>=2.4
+numpy
+einops
+scipy
+tqdm
+PyYAML
+# Validated local versions recorded in results/local_smoke_environment.txt.
+torchtune==0.4.0
+torchao==0.7.0

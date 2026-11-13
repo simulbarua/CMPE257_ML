@@ -1,0 +1,7 @@
+{
+  "dataset_sha256": "bf8f3485f9e36763e07f0234e0ddb479cb023358797615388a36f0d7238cea99",
+  "max_len": 50,
+  "seed": 42,
+  "metric_ks": [5, 10, 20],
+  "evaluation_batch_size": 512
+}
