@@ -1,14 +1,17 @@
-# Evaluation agreement — pending verification
+# Shared evaluation protocol
 
-Before full runs, all three members must agree on the following and record the implemented behavior:
+Implementation and usage: [shared-code guide](../docs/SHARED_CODE_GUIDE.md).
 
-- Exact dataset version, checksums, ID mapping, and padding token.
-- Actual split semantics in supplied data and code, checked against the paper.
-- Sequence maximum length, truncation, padding and attention masks.
-- Target construction, eligible users/items, and leakage checks.
-- Metric formulas and cutoffs from the paper, tested on a tiny known example.
-- Candidate set and treatment of previously seen items, consistently across models.
-- Seeds, validation-based model selection, and comparable tuning budgets.
-- Timing hardware, batch size, warm-up, and whether loading/preprocessing is included.
+- Data: pinned Baby pickle checksum in `configs/shared.json`; retain aligned per-user holdouts.
+- Validation history: train. Test history: train + val. Targets never enter the inference callback.
+- Inputs: latest 50 items, left zero-padding; original positive product IDs.
+- Outputs: score columns match item IDs, including column 0 for padding.
+- Candidates: all real product IDs, excluding padding; no seen-item filtering.
+- Metrics: HR and NDCG at 5, 10, 20, averaged per user, returned as fractions.
+- Ties: ascending item ID. Reject invalid score shapes and nonfinite candidate scores.
+- Selection: tune/select with validation only. Keep test results for final reporting.
+- Record seed, software, hardware, checkpoint source, configuration and data checksum.
 
-Do not compare results obtained under incompatible settings as if they were equivalent. Document paper/code differences explicitly. Optional shortened-history analysis uses fixed users, targets, checkpoints, and candidate sets.
+Known differences: inspected upstream trainer averages batch means. Shared evaluator weights users equally, explicitly excludes padding and resolves ties. Run and label untouched upstream evaluation separately when checking published numbers. The paper describes an 8:1:1 user split, but the released loader/file uses the same users with per-user item holdouts. Follow the released data here and disclose that discrepancy.
+
+Training target strategy remains model-specific (`per_token` or `last`); use the same underlying histories. Optional shortened-history evaluation is not implemented yet. Timing benchmarks are not implemented yet and need a shared hardware/warm-up policy.

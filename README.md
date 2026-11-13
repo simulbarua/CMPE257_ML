@@ -10,7 +10,9 @@ We will reproduce ADRec on Amazon Baby Products and compare it with GRU4Rec and 
 2. Complete the data and evaluation agreement before full training.
 3. Bring in and verify the upstream implementation before adding dependencies or training commands.
 
-**Status:** collaboration scaffold only. Training, evaluation, and the application are not implemented yet.
+**Status:** shared data preparation and ranking evaluation are implemented. Model training, Kaggle notebooks, and the application are not implemented yet.
+
+Start with the [shared-code walkthrough](docs/SHARED_CODE_GUIDE.md).
 
 ## Structure
 

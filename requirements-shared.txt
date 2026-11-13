@@ -1,0 +1,3 @@
+# Core data and evaluation code uses the Python standard library.
+# Optional src.data.torch_adapter requires PyTorch (normally available on Kaggle).
+# Model-specific dependencies will be specified when training is integrated.
