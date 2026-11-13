@@ -8,9 +8,9 @@ We will reproduce ADRec on Amazon Baby Products and compare it with GRU4Rec and 
 
 1. Read [team tasks](docs/TASKS.md) and [contribution workflow](CONTRIBUTING.md).
 2. Complete the data and evaluation agreement before full training.
-3. Bring in and verify the upstream implementation before adding dependencies or training commands.
+3. Follow the [Kaggle training guide](docs/KAGGLE_TRAINING.md) to run your assigned notebook with the pinned upstream models.
 
-**Status:** shared data preparation and ranking evaluation are implemented. Local ADRec/SASRec+/GRU4Rec-adapter smoke checks are available; full training launchers, Kaggle notebooks, and the application are not implemented yet.
+**Status:** shared data preparation, ranking evaluation, resumable training, and one Kaggle notebook per member are implemented. All three notebooks have passed local CPU smoke runs. Full Kaggle GPU runs and the web application remain to be completed.
 
 Start with the [shared-code walkthrough](docs/SHARED_CODE_GUIDE.md).
 
