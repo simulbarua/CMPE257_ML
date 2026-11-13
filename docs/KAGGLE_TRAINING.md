@@ -27,7 +27,7 @@ Create a **private Kaggle dataset** containing the two files and share it with t
 1. Create a Kaggle notebook and import your assigned `.ipynb` file.
 2. Attach the private dataset containing the ZIP and `dataset.pkl` through **Add Input** (the exact UI label can vary).
 3. Enable Internet for dependency installation. Enable a GPU for full training; the notebooks use a single GPU even when more than one is available.
-4. Run the cells from top to bottom. The setup cell finds the files automatically if there is exactly one matching file. Otherwise set `CODE_ZIP` and `DATA_FILE` to their paths under `/kaggle/input`.
+4. Run the cells from top to bottom. The setup cell finds the files automatically if there is exactly one matching file. Kaggle may automatically unpack the ZIP; the notebook also discovers the extracted `bundle_manifest.json` and copies its listed code files. If automatic discovery is ambiguous, set `CODE_ZIP` (for an intact ZIP) or `CODE_DIR` (the extracted folder containing the manifest), plus `DATA_FILE`, to their paths under `/kaggle/input`.
 5. Let the installation cell finish before importing models. If the kernel requests a restart, restart and run again from the top. The code preserves Kaggle's installed CUDA PyTorch when it satisfies the requirements; the actual environment is recorded for each run.
 
 Kaggle supports attached data and saves notebook outputs from `/kaggle/working`; **Save & Run All** runs the notebook again in a separate session. See [Kaggle's notebook documentation](https://www.kaggle.com/docs/notebooks).
