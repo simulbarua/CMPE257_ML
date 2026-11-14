@@ -1,0 +1,26 @@
+{
+  "dataset_sha256": "bf8f3485f9e36763e07f0234e0ddb479cb023358797615388a36f0d7238cea99",
+  "max_len": 50,
+  "seed": 44,
+  "metric_ks": [
+    5,
+    10,
+    20
+  ],
+  "evaluation_batch_size": 512,
+  "epochs": 500,
+  "train_batch_size": 512,
+  "learning_rate": 0.001,
+  "weight_decay": 1e-05,
+  "hidden_size": 128,
+  "eval_interval": 5,
+  "patience": 4,
+  "warmup_epochs": 5,
+  "scheduler_t_max": 500,
+  "gru_num_layers": 1,
+  "gru_dropout": 0.3,
+  "model": "sasrec",
+  "mode": "full",
+  "user_limit": null,
+  "diffusion_steps": 32
+}

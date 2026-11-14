@@ -1,0 +1,4 @@
+model,dataset,n_runs,seeds,statistic,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+SASRec+,Baby,5,42-46,mean,2.3872,3.618,5.5902,1.6331,2.0279,2.5217
+SASRec+,Baby,5,42-46,"std (sample, n-1)",0.1046,0.1738,0.2868,0.0509,0.0568,0.0766
+"SASRec+ (paper, Table 2)",Baby,5,not reported,mean,,,5.5268,,,2.5197

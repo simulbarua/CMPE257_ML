@@ -1,0 +1,6 @@
+run_id,model,dataset,seed,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+anusha_sasrec_full_01,SASRec+,Baby,42,35,56,2.4536,3.7304,5.9378,1.6537,2.0637,2.6137
+anusha_sasrec_full_seed43,SASRec+,Baby,43,40,61,2.2753,3.5604,5.5541,1.5826,1.992,2.4896
+anusha_sasrec_full_seed44,SASRec+,Baby,44,45,66,2.3677,3.4237,5.2286,1.6767,2.0164,2.4694
+anusha_sasrec_full_seed45,SASRec+,Baby,45,45,66,2.3092,3.5184,5.4219,1.5743,1.9624,2.443
+anusha_sasrec_full_seed46,SASRec+,Baby,46,30,51,2.53,3.8573,5.8086,1.6781,2.1048,2.5926

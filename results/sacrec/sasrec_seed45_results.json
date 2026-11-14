@@ -1,0 +1,31 @@
+{
+  "model": "sasrec",
+  "mode": "full",
+  "users": 11761,
+  "dataset": {
+    "users": 11761,
+    "unique_items": 4731,
+    "max_item_id": 4731,
+    "interactions": {
+      "train": 69301,
+      "val": 11761,
+      "test": 11761
+    }
+  },
+  "best_epoch": 45,
+  "early_stopped": true,
+  "epochs_completed": 66,
+  "test": {
+    "users": 11761,
+    "protocol": "adrec_upstream",
+    "units": "percent",
+    "metrics": {
+      "HR@5": 2.3092,
+      "NDCG@5": 1.5743,
+      "HR@10": 3.5184,
+      "NDCG@10": 1.9624,
+      "HR@20": 5.4219,
+      "NDCG@20": 2.443
+    }
+  }
+}
