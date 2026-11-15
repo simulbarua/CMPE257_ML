@@ -1,0 +1,57 @@
+{
+  "seed": 43,
+  "diffusion_steps": 32,
+  "checkpoint_sha256": "54954464c5776d0851a92b62aa0b16641376c7923880750d6aa1ebca6da80598",
+  "evaluation": {
+    "users": 11761,
+    "protocol": "adrec_upstream",
+    "units": "percent",
+    "metrics": {
+      "HR@5": 2.7513,
+      "NDCG@5": 1.9114,
+      "HR@10": 4.3174,
+      "NDCG@10": 2.4109,
+      "HR@20": 6.6581,
+      "NDCG@20": 2.995
+    }
+  },
+  "original_saved_evaluation": {
+    "users": 11761,
+    "protocol": "adrec_upstream",
+    "units": "percent",
+    "metrics": {
+      "HR@5": 2.7513,
+      "NDCG@5": 1.9114,
+      "HR@10": 4.3174,
+      "NDCG@10": 2.4109,
+      "HR@20": 6.6581,
+      "NDCG@20": 2.995
+    }
+  },
+  "config": {
+    "dataset_sha256": "bf8f3485f9e36763e07f0234e0ddb479cb023358797615388a36f0d7238cea99",
+    "max_len": 50,
+    "seed": 43,
+    "metric_ks": [
+      5,
+      10,
+      20
+    ],
+    "evaluation_batch_size": 512,
+    "epochs": 500,
+    "train_batch_size": 512,
+    "learning_rate": 0.001,
+    "weight_decay": 1e-05,
+    "hidden_size": 128,
+    "eval_interval": 5,
+    "patience": 4,
+    "warmup_epochs": 5,
+    "scheduler_t_max": 500,
+    "gru_num_layers": 1,
+    "gru_dropout": 0.3,
+    "model": "adrec",
+    "mode": "full",
+    "user_limit": null,
+    "diffusion_steps": 32
+  }
+}

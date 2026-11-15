@@ -111,7 +111,24 @@ These are explicit runner differences from upstream:
 
 Metric parity on identical scores is already covered by the shared tests. Equal metric code does not establish exact paper reproduction or equal trained scores. Record any new settings and compare completed full runs fairly.
 
-## Validation
+## Diffusion-step comparison
+
+`notebooks/adrec_diffusion_steps_kaggle.ipynb` is a separate experiment using the completed five-seed run. It trains 8- and 16-step ADRec models from each seed's saved `pretrain/best.pt` and loads the corresponding 32-step `adrec/best.pt` as the baseline. The original reproduction results and checkpoints remain unchanged.
+
+1. Build the current code bundle using `python3 -m scripts.package_kaggle --dataset data/baby/dataset.pkl`.
+2. Attach the code ZIP, Baby dataset, and `checkpoints/adrec_all_results_and_models.zip` as private Kaggle inputs. Uploading the checkpoint archive is a separate step; the code packager excludes model weights.
+3. Import the diffusion-step notebook and run its numbered sections. Input validation checks checkpoint hashes, saved configurations, dataset identity, and relevant source files before training.
+4. Use smoke mode for a pipeline check. It retains the existing full-sized embeddings but runs two epochs on nine users; its scores are not comparable with the full experiment.
+5. In full mode, train ten new ADRec runs. All three step counts are evaluated and timed in one comparison session. The timing cell may be rerun to create another separate session.
+6. Download the metadata and model ZIPs. Per-run ZIPs and metadata archives are also created after each completed training run. Resume in a new session by attaching the extracted model output and setting `RESUME_ROOT` to the directory containing `runs/`.
+
+The authors' `trunc_lin` schedule changes its endpoint formula for 8 and 16 steps. `noise_schedules.json` records the actual beta endpoints and terminal alpha product. This experiment measures configurations under that schedule, not a pure iteration-count effect with a fixed noise trajectory.
+
+Latency includes denoising, full-catalog scoring, and device top-20 selection on preloaded histories. Model loading, padding, transfers, and application overhead are excluded. Warm-up calls are excluded, CUDA is synchronized before and after each measurement, and batch sizes 1 and 32 are measured separately. Raw timings, input hashes, checkpoint hashes, runtime details, per-seed scores, and mean/sample-standard-deviation summaries are saved. Speedups use the newly measured 32-step baseline from the same session. Original saved accuracy metrics are retained alongside the new evaluations. Timings from different sessions are not pooled.
+
+The predefined step counts use the same splits and evaluation protocol. Checkpoints are selected using validation; test metrics are used for final reporting rather than automatic configuration selection. No training-time speedup is claimed.
+
+## Validation commands
 
 Run the checks from the repository root:
 

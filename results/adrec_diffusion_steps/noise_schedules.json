@@ -1,0 +1,26 @@
+[
+  {
+    "diffusion_steps": 8,
+    "noise_schedule": "trunc_lin",
+    "beta_start": 0.0225,
+    "beta_end": 0.135,
+    "terminal_alpha_bar": 0.5155140273815892,
+    "small_step_endpoint_adjustment": true
+  },
+  {
+    "diffusion_steps": 16,
+    "noise_schedule": "trunc_lin",
+    "beta_start": 0.01625,
+    "beta_end": 0.0725,
+    "terminal_alpha_bar": 0.4824616689348992,
+    "small_step_endpoint_adjustment": true
+  },
+  {
+    "diffusion_steps": 32,
+    "noise_schedule": "trunc_lin",
+    "beta_start": 0.013125000000000001,
+    "beta_end": 0.635,
+    "terminal_alpha_bar": 9.901298766552524e-07,
+    "small_step_endpoint_adjustment": false
+  }
+]
