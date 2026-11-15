@@ -1,6 +1,6 @@
 # ADRec training notebook
 
-[adrec_kaggle.ipynb](adrec_kaggle.ipynb) runs seeds 42–46 through embedding pretraining, ADRec alignment, fine-tuning, test evaluation, and result export.
+[adrec_kaggle.ipynb](adrec_kaggle.ipynb) sweeps seeds 42–46 directly in notebook cells through embedding pretraining, ADRec alignment, fine-tuning, test evaluation, and result export. The training cell calls the existing shared `train()` function; export functions are defined in the notebook.
 
 1. Build the upload bundle with `python3 -m scripts.package_kaggle --dataset data/baby/dataset.pkl`.
 2. Attach the updated code ZIP and Baby dataset to Kaggle.

@@ -10,7 +10,7 @@ From the repository root, run:
 python3 -m scripts.package_kaggle --dataset data/baby/dataset.pkl
 ```
 
-Upload `work/kaggle_upload/cmpe257_kaggle_code.zip` and `work/kaggle_upload/dataset.pkl` to a private Kaggle dataset. Import `notebooks/adrec_kaggle.ipynb` into Kaggle and attach that dataset through **Add Input**. Use the updated ZIP; previous bundles do not contain `src/training/adrec_experiments.py`.
+Upload `work/kaggle_upload/cmpe257_kaggle_code.zip` and `work/kaggle_upload/dataset.pkl` to a private Kaggle dataset. Import `notebooks/adrec_kaggle.ipynb` into Kaggle and attach that dataset through **Add Input**. Use the current source ZIP with the shared training code. The seed loop and export functions are defined directly in notebook cells; no separate sweep module is required.
 
 The setup accepts an intact ZIP or Kaggle-extracted source files. Automatic discovery requires one matching code source and one `dataset.pkl`. Set `CODE_ZIP` or `CODE_DIR`, plus `DATA_FILE`, when multiple sources are attached.
 
@@ -34,7 +34,7 @@ For a pipeline check, set `RUN_MODE = 'smoke'`. This uses nine users, hidden siz
 
 ## 3. Run the training loop
 
-Run **Train and export seeds 42–46**. For each seed, the notebook completes pretraining, ADRec alignment, fine-tuning, test evaluation, and export before starting the next seed.
+Run **Define the result exports**, then **Train and export seeds 42–46**. The sweep cell creates both configurations for each seed and calls the shared `train()` function directly. For each seed, the notebook completes pretraining, ADRec alignment, fine-tuning, test evaluation, and export before starting the next seed.
 
 Pretraining uses the original SASRec implementation in `pretrain` mode, without positional embeddings, and optimizes next-item cross-entropy loss. Validation selects the embedding checkpoint. Pretraining does not evaluate the test set.
 

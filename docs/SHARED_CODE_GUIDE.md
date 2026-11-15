@@ -87,7 +87,7 @@ The first checks small examples with known answers. The second verifies the pinn
 - Simul: connect ADRec's training stages and score output to these interfaces.
 - Together: verify one batch per model before full Kaggle runs.
 
-The shared training launcher now lives in `src/training/kaggle.py`, with the ADRec notebook under `notebooks/`. The seed loop and result exporter are in `src/training/adrec_experiments.py`.
+The shared training launcher now lives in `src/training/kaggle.py`, with the ADRec notebook under `notebooks/`. The seed loop and result exports are defined directly in the ADRec notebook and call the shared `train()` function.
 
 ## Provenance
 
