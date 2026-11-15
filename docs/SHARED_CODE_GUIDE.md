@@ -1,6 +1,6 @@
 # Shared data and evaluation walkthrough
 
-This branch supplies common infrastructure and local model smoke checks, not full training launchers or Kaggle notebooks yet. All three notebooks will import these modules after downloading this repository. No GPU is required for the core checks.
+This repository supplies common infrastructure, local model checks, and Kaggle training launchers. The ADRec notebook imports these modules from a local source ZIP attached to Kaggle. See [Kaggle training](KAGGLE_TRAINING.md) for setup and stage-by-stage instructions. No GPU is required for the core checks.
 
 ## 1. `configs/shared.json` — agree on settings
 
@@ -87,7 +87,7 @@ The first checks small examples with known answers. The second verifies the pinn
 - Simul: connect ADRec's training stages and score output to these interfaces.
 - Together: verify one batch per model before full Kaggle runs.
 
-Local model integration checks now exist, but full training launchers and the three Kaggle notebooks remain next steps.
+The shared training launcher now lives in `src/training/kaggle.py`, with the ADRec notebook under `notebooks/`. The seed loop and result exports are defined directly in the ADRec notebook and call the shared `train()` function.
 
 ## Provenance
 

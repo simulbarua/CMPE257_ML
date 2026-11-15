@@ -1,0 +1,6 @@
+run_id,model,dataset,seed,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+adrec_full_seed42,ADRec,Baby,42,30,51,2.7768,3.978,5.9952,2.0019,2.3907,2.8958
+adrec_full_seed43,ADRec,Baby,43,20,41,2.7513,4.3174,6.6581,1.9114,2.4109,2.995
+adrec_full_seed44,ADRec,Baby,44,35,56,2.6901,4.0282,6.226,1.9082,2.3354,2.8877
+adrec_full_seed45,ADRec,Baby,45,25,46,2.6813,4.111,6.2404,1.8728,2.3318,2.8642
+adrec_full_seed46,ADRec,Baby,46,25,46,2.759,4.1139,6.1642,1.942,2.377,2.8898
