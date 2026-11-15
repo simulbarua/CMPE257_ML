@@ -1,11 +1,12 @@
-# Kaggle training notebooks
+# ADRec training notebook
 
-- [adrec_kaggle.ipynb](adrec_kaggle.ipynb): embedding pretraining, ADRec alignment, and fine-tuning.
-- [gru4rec_kaggle.ipynb](gru4rec_kaggle.ipynb): RecBole-derived GRU4Rec CE baseline.
-- [sasrec_kaggle.ipynb](sasrec_kaggle.ipynb): original SASRec implementation included in ADRec, used as the SASRec+ baseline.
+[adrec_kaggle.ipynb](adrec_kaggle.ipynb) runs seeds 42–46 through embedding pretraining, ADRec alignment, fine-tuning, test evaluation, and result export.
 
-Run the numbered sections in order: load project files, install dependencies, check the runtime, configure the run, train, inspect results, load the saved model, and save outputs. ADRec includes a separate embedding pretraining stage. Resume instructions follow the output section.
+1. Build the upload bundle with `python3 -m scripts.package_kaggle --dataset data/baby/dataset.pkl`.
+2. Attach the updated code ZIP and Baby dataset to Kaggle.
+3. Import the notebook, enable Internet and a GPU, and run the numbered sections in order.
+4. Download `adrec_results.zip` and each completed seed's checkpoint ZIP.
 
-Attach the shared code ZIP and the Baby dataset to Kaggle. Run smoke mode to verify execution, then select full mode and a new run name. See [the setup and resume guide](../docs/KAGGLE_TRAINING.md) for configuration and checkpoint details.
+The default is full training for all five seeds. Smoke mode runs small checks in separate output folders. Completed stages are reused when rerunning the training cell; attached run folders support cross-session resume through `RESUME_ROOT`.
 
-Build the local source ZIP without pushing: `python3 -m scripts.package_kaggle --dataset data/baby/dataset.pkl`. The ZIP includes a source manifest. Notebook outputs are cleared; do not commit weights or secrets.
+See [the training instructions](../docs/KAGGLE_TRAINING.md) for the CSV format, export layout, and resume procedure. This directory contains only the ADRec notebook; baseline model implementations remain available in the shared code.

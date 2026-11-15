@@ -1,14 +1,8 @@
-# Kaggle training instructions
+# ADRec Kaggle experiments
 
-| Model | Notebook | Training stages |
-|---|---|---|
-| ADRec | `notebooks/adrec_kaggle.ipynb` | Pretrain Baby item embeddings, align ADRec with frozen embeddings, then fine-tune |
-| GRU4Rec | `notebooks/gru4rec_kaggle.ipynb` | Train the RecBole-derived GRU4Rec CE baseline |
-| SASRec+ | `notebooks/sasrec_kaggle.ipynb` | Train the original SASRec implementation included in ADRec |
+Use `notebooks/adrec_kaggle.ipynb` to train seeds 42–46. Each seed runs embedding pretraining and ADRec training independently. The notebook exports the same per-seed result and CSV summary format used by the baseline experiments.
 
-Each notebook imports the shared Python modules from the code attached to Kaggle. Attach the code ZIP and the Baby dataset before running the notebook. The Python scripts remain in the project folders and are imported by the notebook cells.
-
-## 1. Prepare the input files
+## 1. Prepare the input
 
 From the repository root, run:
 
@@ -16,67 +10,90 @@ From the repository root, run:
 python3 -m scripts.package_kaggle --dataset data/baby/dataset.pkl
 ```
 
-This creates `work/kaggle_upload/cmpe257_kaggle_code.zip` and copies the checked dataset to `work/kaggle_upload/dataset.pkl`. These stay outside Git. The ZIP contains only the selected source, model licenses, configs, notebooks, requirements, and this guide. It excludes Git history, credentials, personal proposal archives, model weights, and unrelated analysis files.
+Upload `work/kaggle_upload/cmpe257_kaggle_code.zip` and `work/kaggle_upload/dataset.pkl` to a private Kaggle dataset. Import `notebooks/adrec_kaggle.ipynb` into Kaggle and attach that dataset through **Add Input**. Use the updated ZIP; previous bundles do not contain `src/training/adrec_experiments.py`.
 
-The ZIP uses the **current local files**, so it works before this branch is pushed. Rebuild it after changing training code. Its manifest records the base Git commit, branch, and individual file hashes; the base commit alone does not describe uncommitted work.
+The setup accepts an intact ZIP or Kaggle-extracted source files. Automatic discovery requires one matching code source and one `dataset.pkl`. Set `CODE_ZIP` or `CODE_DIR`, plus `DATA_FILE`, when multiple sources are attached.
 
-Create a private Kaggle dataset containing the two files. Grant dataset access to collaborators through its sharing settings. All three notebooks use the same code ZIP and Baby dataset.
+Enable Internet for installation and select a GPU for full training. The notebook uses one GPU. Run the setup, dependency, and runtime sections before training. Kaggle input and output behavior is described in [the notebook documentation](https://www.kaggle.com/docs/notebooks).
 
-## 2. Configure Kaggle
+## 2. Configure the batch
 
-1. Create a Kaggle notebook and import the `.ipynb` file for the selected model.
-2. Attach the private dataset containing the ZIP and `dataset.pkl` through **Add Input** (the exact UI label can vary).
-3. Enable Internet for dependency installation. Enable a GPU for full training; the notebooks use a single GPU even when more than one is available.
-4. Run the cells from top to bottom. The setup cell finds the files automatically if there is exactly one matching file. Kaggle may automatically unpack the ZIP; the notebook also discovers the extracted `bundle_manifest.json` and copies its listed code files. If automatic discovery is ambiguous, set `CODE_ZIP` (for an intact ZIP) or `CODE_DIR` (the extracted folder containing the manifest), plus `DATA_FILE`, to their paths under `/kaggle/input`.
-5. Let the installation cell finish before importing models. If the kernel requests a restart, restart and run again from the top. The code preserves Kaggle's installed CUDA PyTorch when it satisfies the requirements; the actual environment is recorded for each run.
+The default configuration is:
 
-Kaggle supports attached data and saves notebook outputs from `/kaggle/working`; **Save & Run All** runs the notebook again in a separate session. See [Kaggle's notebook documentation](https://www.kaggle.com/docs/notebooks).
+```python
+RUN_MODE = 'full'
+SEEDS = [42, 43, 44, 45, 46]
+RESUME_ROOT = None
+```
 
-## 3. Select the run mode
+A fresh batch trains all five seeds, including seed 42. It does not import the earlier seed-42 result. Preserve previous experiment folders separately. Each seed creates a separate `runs/adrec_full_seed<N>/` folder, with `pretrain/` and `adrec/` subfolders.
 
-Leave `RUN_MODE = 'smoke'`. This uses the first nine aligned users, the complete item vocabulary, hidden size 16, four diffusion steps, batch size four, and two epochs per stage. ADRec performs one frozen epoch and one fine-tuning epoch. It exercises training, validation, test evaluation, saving, and reloading. These numbers are **not benchmark results**.
+Full mode uses all 11,761 users, 4,731 products, hidden size 128, 32 diffusion steps, training and evaluation batch sizes 512, and up to 500 epochs per stage with early stopping. `configs/shared.json` fixes the data checksum, sequence length, metric cutoffs, and evaluation batch size. `configs/kaggle.json` supplies the training settings. The loop sets the selected seed in both stage configurations.
 
-Check that losses are finite, checkpoints appear, and the inference cell returns product IDs. Zero HR/NDCG in this tiny run is not itself a pipeline failure.
+For a pipeline check, set `RUN_MODE = 'smoke'`. This uses nine users, hidden size 16, four diffusion steps, and two epochs per stage. Smoke results are saved under `smoke_results/adrec/` and are rejected when mixed with full results.
 
-Then select `RUN_MODE = 'full'` and use a new `RUN_NAME`. Full mode uses all 11,761 users, hidden size 128, 32 diffusion steps, train/evaluation batch sizes 512, and up to 500 epochs with early stopping. ADRec has separate pretraining and diffusion training runs, each with its own epoch limit. Full training requires a GPU. These settings define the starting configuration; they do not establish reproduction of the paper's reported scores.
+## 3. Run the training loop
 
-All notebooks use `configs/shared.json`: data checksum, sequence length 50, seed 42, evaluation batch size 512, and HR/NDCG cutoffs 5/10/20. `configs/kaggle.json` holds common starting training settings. GRU4Rec trains one final target per user; SASRec+ and ADRec use per-token targets, matching the existing adapters. Retain the same data splits and evaluation protocol across models.
+Run **Train and export seeds 42–46**. For each seed, the notebook completes pretraining, ADRec alignment, fine-tuning, test evaluation, and export before starting the next seed.
 
-If a training batch runs out of memory, choose a smaller **training** batch size for a new run and record that change. Retain the evaluation batch size: upstream averages batch means, so batch boundaries affect reported metrics. Training uses one GPU without mixed precision.
+Pretraining uses the original SASRec implementation in `pretrain` mode, without positional embeddings, and optimizes next-item cross-entropy loss. Validation selects the embedding checkpoint. Pretraining does not evaluate the test set.
 
-## 4. Run the ADRec training stages
+ADRec loads only that seed's pretrained item embeddings. In full mode, embeddings remain frozen during epochs 0–4 and become trainable at epoch 5. Training then updates embeddings and backbone together. Recommendation and diffusion losses follow the existing shared training launcher. Validation selects the checkpoint; final evaluation uses the shared `adrec_upstream` protocol.
 
-The notebook first trains the vendored `pretrain` model, which omits SASRec position embeddings. Its validation-selected `best.pt` supplies only item embeddings to ADRec. The SASRec+ baseline includes positional embeddings and is trained separately. Pretraining does not inspect test results.
+Each completed epoch writes `latest.pt`. Each completed seed exports metadata and creates `adrec_full_seed<N>.zip`. The combined result archive is updated after every seed, so completed runs can be saved before the full batch finishes.
 
-ADRec keeps embeddings frozen for epochs 0–4, then unfreezes them at epoch 5. The optimizer and scheduler continue through that transition. Set `PRETRAINED_CHECKPOINT` to skip pretraining and load a compatible Baby checkpoint with 4,732 embedding rows, hidden size 128 for full runs, and the same product-ID mapping. Both the authors' plain state dictionary and this launcher's `best.pt` format are accepted. Shape checks cannot verify an external checkpoint's item mapping; confirm its provenance before loading. No weights are downloaded automatically. A smoke checkpoint is not compatible with a full run.
+To recover from an interruption in the same session, rerun the training cell. Completed stages are reused without retraining or re-evaluation; unfinished stages resume from `latest.pt`. Configuration mismatches are rejected. To recover in another session, use the resume steps below.
 
-## 5. Save results and checkpoints
+## 4. Inspect the CSV files
 
-Each stage writes to `/kaggle/working/runs/<RUN_NAME>/<stage>/`:
+`results/adrec/adrec_baby_runs.csv` uses these columns:
 
-| File | Purpose |
-|---|---|
-| `best.pt` | Validation-selected weights and model settings for inference |
-| `latest.pt` | Most recent completed epoch, optimizer, scheduler, best weights, random states, and loader state for resuming |
-| `config.json` | Selected settings and dataset checksum |
-| `environment.json` | Python/PyTorch, GPU, CUDA, and source snapshot |
-| `requirements-lock.txt` | Installed Python package versions |
-| `history.json` | Epoch losses, embedding freeze status, and validation results |
-| `results.json` | Completion status, chosen epoch, and final test metrics when requested |
+```text
+run_id,model,dataset,seed,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+```
 
-Download these files or preserve them with a Kaggle notebook version before leaving a session. `latest.pt` updates at each completed epoch, but a file on a temporary VM is not a durable backup. **Save & Run All** executes the cells again; it does not download the existing interactive run. Keep model weights outside Git. Version the small result and configuration files separately from the model weights.
+`results/adrec/adrec_baby_summary.csv` uses:
 
-The example inference cell reloads `best.pt` and predicts from a visible history, without passing the held-out target. It hides padding ID 0 for the demo only. Evaluation retains upstream candidates. The dataset has IDs, not product names/images.
+```text
+model,dataset,n_runs,seeds,statistic,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+```
 
-## 6. Resume a saved run
+The summary reports `mean` and `std (sample, n-1)` over completed test results, rounded to four decimal places. A complete batch has `n_runs = 5` and `seeds = 42-46`. Partial batches list only completed seeds. A single completed run has a mean row and no standard-deviation row. Missing runs are never filled with repeated or invented values.
 
-Attach the saved `latest.pt` as another Kaggle input. Set `RESUME_CHECKPOINT` to its path, restore the same run mode/settings, and choose a new writable output folder. For embedding pretraining, set `PRETRAIN_RESUME`; resuming ADRec itself skips pretraining. A completed epoch is the restart boundary.
+Different seeds change initialization, training order, dropout, and diffusion sampling. The mean summarizes performance across runs; standard deviation describes how much the scores vary. Keep data splits and evaluation settings fixed across all seeds and models. Select models using validation, and use test metrics for final reporting.
 
-Only the total `epochs` setting may increase when resuming; incompatible configurations fail before training. Optimizer, scheduler, data shuffle, and random states are restored. Different GPU/library versions can still change numerical results. A run that has early-stopped stays stopped.
+## 5. Download results and weights
 
-For long runs split into sessions, use `FINALIZE = False` until the final run so intermediate chunks do not inspect the test set. Set an epoch cap that allows scheduled validation (for example 51 epochs reaches zero-based epoch 50). For pretraining, run its cell until that stage is complete before starting the ADRec cell. Changing an epoch cap before the first scheduled validation can trigger the short-run validation fallback described below, so log session boundaries.
+Download these files from `/kaggle/working` before ending the session:
 
-To evaluate a completed run without additional training, resume with the same epoch cap and `FINALIZE = True`. Do not choose settings based on repeated test results.
+| Archive | Local destination | Contents |
+|---|---|---|
+| `adrec_results.zip` | `results/adrec/` | Per-seed JSON/text metadata, CSVs, experiment record, checkpoint hashes, and pretraining metadata |
+| `adrec_full_seed42.zip` through `adrec_full_seed46.zip` | `checkpoints/adrec_full_seed<N>/` | The selected seed's complete `pretrain/` and `adrec/` output folders, including weights |
+
+Each result export contains `adrec_seed<N>_results.json`, `adrec_seed<N>_config.json`, `adrec_seed<N>_history.json`, `adrec_seed<N>_environment.json`, `adrec_seed<N>_requirements-lock.txt`, and `adrec_seed<N>_checkpoints.json`. Pretraining metadata is under `pretrain/`. For compatibility with the baseline layout, `environment.json` and `requirements-lock.txt` are copies from the lowest listed seed; per-seed files preserve all environments.
+
+`best.pt` contains validation-selected weights and settings for inference. `latest.pt` includes the optimizer, scheduler, random states, and last completed epoch for resuming. Keep weights outside Git. Share only the small result files and record the location of privately stored checkpoints. The original downloaded `checkpoints/adrec_full_run/` is separate from the new batch.
+
+Run the inference cell to reload a completed model and generate recommendations from visible history. The example excludes padding ID 0; benchmark evaluation keeps the upstream candidate rules.
+
+## 6. Resume in a new Kaggle session
+
+Save the full run directories, including any unfinished stage, before ending the session. Attach them in the new session and set `RESUME_ROOT` to the folder containing:
+
+```text
+adrec_full_seed42/
+    pretrain/
+    adrec/
+adrec_full_seed43/
+    pretrain/
+    adrec/
+...
+```
+
+Retain the original configuration and run the notebook from setup. Complete stages are copied into the working directory and reused. Incomplete stages resume from the last completed epoch. Seeds with no saved stages start from scratch. An early-stopped stage stays stopped. Cross-hardware training resume is not guaranteed to be numerically identical.
+
+**Save Version → Save & Run All** starts a separate background execution from the first cell. It uses the attached inputs and `RESUME_ROOT`; it does not inherit an interactive session's unsaved files. Preserve checkpoints before ending or replacing an interactive session.
 
 ## Implementation and evaluation protocol
 
@@ -94,15 +111,9 @@ These are explicit runner differences from upstream:
 
 Metric parity on identical scores is already covered by the shared tests. Equal metric code does not establish exact paper reproduction or equal trained scores. Record any new settings and compare completed full runs fairly.
 
-## Local validation
+## Validation
 
-Validated on the local CPU environment on November 13, 2026:
-
-- All 16 unit tests passed, including unchanged shared evaluation tests.
-- All three notebooks executed every code cell against the real Baby dataset and packaged source, with only Kaggle paths redirected and the pip-install cell skipped (dependencies were already installed). Pretraining, ADRec warmup/fine-tuning, both baselines, evaluation, saving, and inference all completed.
-- Synthetic training tests checked exact equality of resumed versus uninterrupted GRU4Rec and ADRec runs, frozen embeddings during alignment and changed embeddings during fine-tuning, rejection of incompatible resumes/embedding dimensions, and history-only ADRec scores matching the label-conditioned upstream inference call under the same seed.
-
-Run the validation commands from the repository root after installing the dependencies:
+Run the checks from the repository root:
 
 ```bash
 python -m unittest discover -s tests -v
@@ -110,4 +121,4 @@ python -m scripts.package_kaggle --dataset data/baby/dataset.pkl
 python -m scripts.check_kaggle_notebooks --output-dir work/a-new-check-folder
 ```
 
-The notebook checker writes logs and `summary.json` under the chosen new directory. It does not modify notebook outputs. A full ADRec run completed on a Kaggle Tesla T4. Its saved checkpoints loaded locally on CPU, and the example history produced the same ten product IDs. Full GRU4Rec and SASRec+ runs on Kaggle and cross-hardware training resume have not been verified.
+The notebook checker runs all five seeds in smoke mode on CPU. It redirects Kaggle paths and skips dependency installation. Test coverage includes CSV schema, sample standard deviation, partial summaries, conflicting results, completed-stage reuse, and independent pretraining/ADRec seed settings. Smoke checks do not constitute full five-seed GPU training.

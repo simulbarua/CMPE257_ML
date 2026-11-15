@@ -8,9 +8,9 @@ We will reproduce ADRec on Amazon Baby Products and compare it with GRU4Rec and 
 
 1. Read [team tasks](docs/TASKS.md) and [contribution workflow](CONTRIBUTING.md).
 2. Complete the data and evaluation agreement before full training.
-3. Follow the [Kaggle training guide](docs/KAGGLE_TRAINING.md) to run your assigned notebook with the pinned upstream models.
+3. Follow the [Kaggle training guide](docs/KAGGLE_TRAINING.md) to run the ADRec experiments with the pinned upstream models.
 
-**Status:** shared data preparation, ranking evaluation, resumable training, and one Kaggle notebook per member are implemented. All three notebooks have passed local CPU smoke runs. Full Kaggle GPU runs and the web application remain to be completed.
+**Status:** shared data preparation, ranking evaluation, resumable training, and an ADRec notebook for seeds 42–46 are implemented. One full ADRec run has completed on Kaggle and its checkpoint has loaded locally. The new five-seed batch requires execution on Kaggle. The web application remains to be implemented.
 
 Start with the [shared-code walkthrough](docs/SHARED_CODE_GUIDE.md).
 

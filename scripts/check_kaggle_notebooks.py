@@ -1,6 +1,7 @@
 """Execute all notebook code cells locally with an existing Python environment.
 
-Only Kaggle filesystem roots and the pip-install cell are replaced. Each
+Kaggle filesystem roots are redirected, full mode is replaced with smoke mode,
+and the pip-install cell is skipped. Each
 notebook runs in a fresh subprocess; notebook files/outputs are not modified.
 """
 import argparse
@@ -27,9 +28,13 @@ def execute(path, bundle_dir, output_dir):
             continue
         source = source.replace("INPUT_ROOT = Path('/kaggle/input')", f"INPUT_ROOT = Path({str(bundle_dir)!r})")
         source = source.replace("WORK_ROOT = Path('/kaggle/working')", f"WORK_ROOT = Path({str(output_dir)!r})")
+        source = source.replace("RUN_MODE = 'full'", "RUN_MODE = 'smoke'")
         exec(compile(source, f"{path.name}:cell-{index}", "exec"), namespace)
     assert namespace["cfg"]["mode"] == "smoke"
-    assert namespace["result"]["test"]["protocol"] == "adrec_upstream"
+    assert sorted(namespace["completed_runs"]) == [42, 43, 44, 45, 46]
+    for outcome in namespace["completed_runs"].values():
+        assert outcome["result"]["test"]["protocol"] == "adrec_upstream"
+    assert [row["seed"] for row in namespace["rows"]] == [42, 43, 44, 45, 46]
     assert len(namespace["recommended_ids"]) == 10
 
 
