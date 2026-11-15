@@ -118,7 +118,6 @@ Run the checks from the repository root:
 ```bash
 python -m unittest discover -s tests -v
 python -m scripts.package_kaggle --dataset data/baby/dataset.pkl
-python -m scripts.check_kaggle_notebooks --output-dir work/a-new-check-folder
 ```
 
-The notebook checker runs all five seeds in smoke mode on CPU. It redirects Kaggle paths and skips dependency installation. Test coverage includes CSV schema, sample standard deviation, partial summaries, conflicting results, completed-stage reuse, and independent pretraining/ADRec seed settings. Smoke checks do not constitute full five-seed GPU training.
+Unit tests cover training and resume behavior, inference, CSV schema, sample standard deviation, partial summaries, conflicting results, completed-stage reuse, and independent pretraining/ADRec seed settings. To check the complete notebook on Kaggle, set `RUN_MODE = 'smoke'` and run its cells in order. Smoke checks do not constitute full five-seed GPU training.
