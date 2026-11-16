@@ -1,6 +1,6 @@
 # Local reproduction checks
 
-Branch: `fix/upstream-evaluation-checks`. Kept separate from `main` for team review.
+These checks validate the shared data pipeline, evaluation functions, and model interfaces. Full-training results are documented separately in [results](../results/README.md).
 
 ## Re-run
 
@@ -26,9 +26,11 @@ The smoke runner requires the pinned Baby dataset in that location. It runs on C
 
 Machine-readable results: `results/local_model_smoke.json`. Local package versions: `results/local_smoke_environment.txt`.
 
-## Before full reproduction
+## Scope and completed training
 
-Review changes before merging. Full model notebooks and training schedules are not yet implemented as team launchers. Confirm full-run GPU environment and model configs. The GRU4Rec adapter is based on RecBole, not established as the ADRec paper's exact implementation. No full training or reported-paper-score reproduction is claimed.
+Kaggle notebooks and the shared training launcher are implemented. Five-seed Baby results are available for ADRec, GRU4Rec, and SASRec+, with additional ADRec results for Beauty and MovieLens-100K and a Baby diffusion-step experiment. See the [training guide](KAGGLE_TRAINING.md) for execution instructions and [results](../results/README.md) for the completed experiments.
+
+The local checks establish interface and evaluation parity; they do not establish exact reproduction of the paper's scores. The GRU4Rec adapter is based on RecBole, not established as the ADRec paper's exact implementation. Training differences and limitations are described in [multi-dataset training](MULTI_DATASET_TRAINING.md#report-section-differences-and-limitations).
 
 Vendored ADRec files are unchanged from the recorded commit. RecBole source/license is retained with adaptation notes. Tiny temporary checkpoints are not committed.
 

@@ -110,7 +110,7 @@ The strict source check permits one exact recorded Baby migration: the old train
 python -m unittest discover -s tests -v
 ```
 
-Checks cover old Baby configurations, resume and evaluation parity, dataset discovery, wrong-dataset embeddings, separate result exports, and exact source-migration matching. Local real-data smoke checks additionally exercise all four stages/model types on all three released files. ADRec GPU training is complete for seeds 42–46 on Baby, Beauty, and MovieLens-100K. The completed results are retained; the proposed warm-up rerun was not performed.
+Checks cover old Baby configurations, resume and evaluation parity, dataset discovery, wrong-dataset embeddings, separate result exports, and exact source-migration matching. Local real-data smoke checks additionally exercise all four stages/model types on all three released files. ADRec GPU training is complete for seeds 42–46 on Baby, Beauty, and MovieLens-100K.
 
 ## Report section: Differences and limitations
 
