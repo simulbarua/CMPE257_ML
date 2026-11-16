@@ -117,3 +117,24 @@ Checks cover old Baby configurations, resume and evaluation parity, dataset disc
 We used the official ADRec model code and released datasets, with a shared script for training and evaluation. We kept the main hyperparameters and the released HR/NDCG evaluation procedure. For each dataset, we trained embeddings and ADRec separately using seeds 42–46 and reported the mean and standard deviation. The official quick-start uses supplied pretrained embeddings and also supports training new embeddings. The paper reports five runs but does not identify their seeds or the embedding checkpoint used for each run. [Paper](https://arxiv.org/html/2505.19544v1), [official instructions](https://github.com/Nemo-1024/ADRec#usage).
 
 Our script keeps embeddings fully fixed during the five-epoch warm-up. The released optimizer can still update frozen embeddings through weight decay. We also use a separate random generator for data shuffling and reset the seed before final test sampling. These differences may affect the scores, but we have not measured their individual effects on accuracy. The paper's split description also differs from the released data, so we followed the released splits. Our results are therefore a reproduction with documented differences, rather than an exact match to the paper. We retained the completed runs without retraining to investigate these differences. [Released trainer](https://github.com/Nemo-1024/ADRec/blob/0a30ef764cd85efa44f884a387198e9bf28c7d4c/src/trainer.py), [gradient wrapper](https://github.com/Nemo-1024/ADRec/blob/0a30ef764cd85efa44f884a387198e9bf28c7d4c/src/pcgrad.py).
+
+## Report section: Baby warm-up ablation
+
+We tested whether the five-epoch warm-up stage helped ADRec on the Baby dataset. For each seed from 42 to 46, we loaded the same pretrained item embeddings used in the original run and trained a fresh ADRec model with `warmup_epochs = 0`. This allowed the embeddings and the backbone to train together from the first epoch. We did not repeat pretraining or initialize from a finished ADRec model. The other full-run settings stayed unchanged, including 32 diffusion steps, data splits, validation-based checkpoint selection, early stopping, and evaluation metrics. A smoke check confirmed that the embeddings changed during epoch zero.
+
+The table compares our five-seed mean ± sample standard deviation with the published Baby results. All scores are percentages; differences are percentage points.
+
+| Experiment | HR@20 | NDCG@20 |
+|---|---:|---:|
+| Our ADRec, five warm-up epochs | 6.2568 ± 0.2446 | 2.9065 ± 0.0509 |
+| Our ADRec, no warm-up | 6.2597 ± 0.2379 | 2.8847 ± 0.0440 |
+| Paper, with warm-up | 7.1524 | 3.1455 |
+| Paper, without warm-up | 6.7507 | 2.9535 |
+
+Without warm-up, HR@20 increased by only 0.0029 percentage points. Three seeds improved and two declined, so the average change was very small. NDCG@20 decreased by 0.0218 percentage points, about 0.75% relative to the original result, and declined in all five seeds. Average HR@5, HR@10, NDCG@5, and NDCG@10 also decreased slightly. These results suggest that warm-up had little effect on whether the target appeared in the top 20, but gave a small benefit to its position in the ranked list.
+
+The paper reported larger decreases without warm-up: 0.4017 percentage points for HR@20 and 0.1920 for NDCG@20. Our results show the same direction for NDCG@20, but do not reproduce the paper's larger effect or its HR@20 decline. The published values are references, not additional project runs, and Table 4 does not report their standard deviations. [ADRec paper, Table 4 and Section 4.4](https://arxiv.org/html/2505.19544v1#S4.SS4).
+
+We reused our historical baseline scores rather than retraining or re-evaluating them. The comparison uses the same five seeds and matching pretrained checkpoint hashes; the recorded runtimes use Tesla T4 GPUs and PyTorch 2.11.0+cu130. The source compatibility check permits only the previously audited Baby dataset-support migration. Our independently pretrained embeddings and documented differences from the released training code still limit direct comparisons with the paper. This experiment tests removal of warm-up in our implementation; it does not isolate the causes of the paper-to-project performance gap. The small changes across five seeds should not be treated as proof that warm-up is unnecessary on other datasets.
+
+Results: [per-seed scores](../results/adrec_warmup_ablation/baby/accuracy_runs.csv), [mean and standard deviation](../results/adrec_warmup_ablation/baby/accuracy_summary.csv), and [paired differences](../results/adrec_warmup_ablation/baby/paired_differences.csv). The [experiment record](../results/adrec_warmup_ablation/baby/EXPERIMENT.md) preserves the run protocol and limitations.

@@ -1,0 +1,5 @@
+variant,model,dataset,warmup_epochs,n_runs,seeds,statistic,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+warmup0,ADRec,Amazon Baby,0,5,"42,43,44,45,46",mean,2.7166,4.0961,6.2597,1.8994,2.3423,2.8847
+warmup0,ADRec,Amazon Baby,0,5,"42,43,44,45,46","std (sample, n-1)",0.0854,0.0805,0.2379,0.0616,0.0267,0.044
+warmup5,ADRec,Amazon Baby,5,5,"42,43,44,45,46",mean,2.7317,4.1097,6.2568,1.9273,2.3692,2.9065
+warmup5,ADRec,Amazon Baby,5,5,"42,43,44,45,46","std (sample, n-1)",0.0431,0.1296,0.2446,0.0484,0.0347,0.0509

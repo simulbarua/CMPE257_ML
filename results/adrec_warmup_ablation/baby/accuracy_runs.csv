@@ -1,0 +1,11 @@
+variant,run_id,model,dataset,seed,warmup_epochs,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+warmup5,adrec_warmup5_seed42,ADRec,Amazon Baby,42,5,30,51,2.7768,3.978,5.9952,2.0019,2.3907,2.8958
+warmup0,adrec_warmup0_seed42,ADRec,Amazon Baby,42,0,30,51,2.828,3.9857,6.0042,1.9978,2.3688,2.8757
+warmup5,adrec_warmup5_seed43,ADRec,Amazon Baby,43,5,20,41,2.7513,4.3174,6.6581,1.9114,2.4109,2.995
+warmup0,adrec_warmup0_seed43,ADRec,Amazon Baby,43,0,20,41,2.759,4.1805,6.6238,1.899,2.3503,2.9611
+warmup5,adrec_warmup5_seed44,ADRec,Amazon Baby,44,5,35,56,2.6901,4.0282,6.226,1.9082,2.3354,2.8877
+warmup0,adrec_warmup0_seed44,ADRec,Amazon Baby,44,0,25,46,2.6991,4.1561,6.2746,1.8736,2.3425,2.8752
+warmup5,adrec_warmup5_seed45,ADRec,Amazon Baby,45,5,25,46,2.6813,4.111,6.2404,1.8728,2.3318,2.8642
+warmup0,adrec_warmup0_seed45,ADRec,Amazon Baby,45,0,25,46,2.5967,4.0441,6.2996,1.83,2.2977,2.8622
+warmup5,adrec_warmup5_seed46,ADRec,Amazon Baby,46,5,25,46,2.759,4.1139,6.1642,1.942,2.377,2.8898
+warmup0,adrec_warmup0_seed46,ADRec,Amazon Baby,46,0,25,46,2.7001,4.1141,6.0963,1.8965,2.3521,2.8495
