@@ -1,6 +1,6 @@
 # Training on Baby, Beauty, and MovieLens-100K
 
-All three models use the same loader, sequence preparation, and original-style HR/NDCG evaluator. Train separate weights for each dataset. Existing Baby results and checkpoints stay in their current locations.
+All three models use the same loader, sequence preparation, and original-style HR/NDCG evaluator. Train separate weights for each dataset. Results use `results/<model>/<dataset>/`, including Baby. Existing checkpoint locations are unchanged.
 
 ## Dataset files
 
@@ -81,16 +81,16 @@ For ADRec, each new dataset/seed trains its own embeddings before ADRec. Baby em
 
 ## Outputs and resume
 
-Baby keeps its previous run and ADRec result paths. New datasets use:
+Baby keeps its previous run and checkpoint paths. Result folders use model then dataset for all three datasets:
 
 ```text
 /kaggle/working/runs/<dataset>/<run-name>/
-/kaggle/working/results/<dataset>/<model>/
-/kaggle/working/smoke_results/<dataset>/<model>/
+/kaggle/working/results/<model>/<dataset>/
+/kaggle/working/smoke_results/<model>/<dataset>/
 /kaggle/working/exports/<dataset>/*.zip
 ```
 
-Extract result archives locally into `results/<dataset>/<model>/`. Store model archives under `checkpoints/<dataset>/`, outside Git. Download the model ZIPs before ending the Kaggle session; results alone cannot restore weights.
+Extract result archives locally into `results/<model>/<dataset>/`. Store model archives under `checkpoints/<dataset>/`, outside Git. Download the model ZIPs before ending the Kaggle session; results alone cannot restore weights.
 
 CSV columns stay compatible with the existing summaries. Dataset labels and filenames identify the selected dataset, for example `adrec_beauty_runs.csv` and `sasrec_ml-100k_summary.csv`. Means and sample standard deviations are calculated separately by dataset/model. Do not pool metrics across datasets. Export validation rejects inconsistent dataset configurations and duplicate/conflicting seed results.
 

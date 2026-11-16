@@ -21,9 +21,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class DatasetSelectionTests(unittest.TestCase):
     def test_default_baby_config_matches_existing_checkpoints(self):
-        for model, path in [('adrec', 'results/adrec/adrec_seed42_config.json'),
-                            ('sasrec', 'results/sacrec/sasrec_seed42_config.json'),
-                            ('gru4rec', 'results/gru4rec/gru4rec_seed42_config.json')]:
+        for model, path in [('adrec', 'results/adrec/baby/adrec_seed42_config.json'),
+                            ('sasrec', 'results/sasrec/baby/sasrec_seed42_config.json'),
+                            ('gru4rec', 'results/gru4rec/baby/gru4rec_seed42_config.json')]:
             self.assertEqual(kaggle.make_config(model, 'full'),
                              json.loads((ROOT / path).read_text()))
             self.assertEqual(kaggle.make_config(model, 'full', dataset='baby'),

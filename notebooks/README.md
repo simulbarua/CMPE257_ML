@@ -21,9 +21,11 @@ Download `adrec_diffusion_results_full.zip` and `adrec_diffusion_models_full.zip
 
 ## Dataset selection and baseline launchers
 
-All launch notebooks accept `DATASET = 'baby'`, `'beauty'`, or `'ml-100k'`. Baby keeps its original paths. New datasets use separate run/result folders and archives. See [multi-dataset training](../docs/MULTI_DATASET_TRAINING.md) for inputs, paths, and compatibility details.
+All launch notebooks accept `DATASET = 'baby'`, `'beauty'`, or `'ml-100k'`. All model results use `results/<model>/<dataset>/`. Baby retains its original run, checkpoint, and ZIP locations. New datasets use separate run folders and archives. See [multi-dataset training](../docs/MULTI_DATASET_TRAINING.md) for inputs, paths, and compatibility details.
 
 - [GRU4Rec](mahalakshmi_gru4rec_kaggle.ipynb) retains the existing seed-42 run and remaining-seed loop.
 - [SASRec+](sasrec_kaggle.ipynb) provides the same workflow using the retained SASRec+ implementation.
 
 Each dataset needs its own trained weights. The optional diffusion notebook requires that dataset’s completed baseline and pretraining checkpoints; it does not require repeating the completed Baby experiment.
+
+Result folders are `results/adrec/<dataset>/`, `results/gru4rec/<dataset>/`, and `results/sasrec/<dataset>/`. Extract each model result ZIP into its dataset folder. The existing `results/adrec_diffusion_steps/` folder stays separate and unchanged.

@@ -32,7 +32,7 @@ A fresh batch trains all five seeds, including seed 42. It does not import the e
 
 Full mode uses all 11,761 users, 4,731 products, hidden size 128, 32 diffusion steps, training and evaluation batch sizes 512, and up to 500 epochs per stage with early stopping. `configs/shared.json` fixes the data checksum, sequence length, metric cutoffs, and evaluation batch size. `configs/kaggle.json` supplies the training settings. The loop sets the selected seed in both stage configurations.
 
-For a pipeline check, set `RUN_MODE = 'smoke'`. This uses nine users, hidden size 16, four diffusion steps, and two epochs per stage. Smoke results are saved under `smoke_results/adrec/` and are rejected when mixed with full results.
+For a pipeline check, set `RUN_MODE = 'smoke'`. This uses nine users, hidden size 16, four diffusion steps, and two epochs per stage. Smoke results are saved under `smoke_results/adrec/<dataset>/` and are rejected when mixed with full results.
 
 ## 3. Run the training loop
 
@@ -48,13 +48,13 @@ To recover from an interruption in the same session, rerun the training cell. Co
 
 ## 4. Inspect the CSV files
 
-`results/adrec/adrec_baby_runs.csv` uses these columns:
+`results/adrec/baby/adrec_baby_runs.csv` uses these columns:
 
 ```text
 run_id,model,dataset,seed,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
 ```
 
-`results/adrec/adrec_baby_summary.csv` uses:
+`results/adrec/baby/adrec_baby_summary.csv` uses:
 
 ```text
 model,dataset,n_runs,seeds,statistic,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
@@ -70,7 +70,7 @@ Download these files from `/kaggle/working` before ending the session:
 
 | Archive | Local destination | Contents |
 |---|---|---|
-| `adrec_results.zip` | `results/adrec/` | Per-seed JSON/text metadata, CSVs, experiment record, checkpoint hashes, and pretraining metadata |
+| `adrec_results.zip` | `results/adrec/<dataset>/` | Per-seed JSON/text metadata, CSVs, experiment record, checkpoint hashes, and pretraining metadata |
 | `adrec_full_seed42.zip` through `adrec_full_seed46.zip` | `checkpoints/adrec_full_seed<N>/` | The selected seed's complete `pretrain/` and `adrec/` output folders, including weights |
 
 Each result export contains `adrec_seed<N>_results.json`, `adrec_seed<N>_config.json`, `adrec_seed<N>_history.json`, `adrec_seed<N>_environment.json`, `adrec_seed<N>_requirements-lock.txt`, and `adrec_seed<N>_checkpoints.json`. Pretraining metadata is under `pretrain/`. For compatibility with the baseline layout, `environment.json` and `requirements-lock.txt` are copies from the lowest listed seed; per-seed files preserve all environments.
