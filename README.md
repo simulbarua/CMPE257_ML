@@ -10,7 +10,7 @@ We will reproduce ADRec on Amazon Baby Products and compare it with GRU4Rec and 
 2. Complete the data and evaluation agreement before full training.
 3. Follow the [Kaggle training guide](docs/KAGGLE_TRAINING.md) to run the ADRec experiments with the pinned upstream models.
 
-**Status:** shared data preparation, ranking evaluation, resumable training, and an ADRec notebook for seeds 42–46 are implemented. One full ADRec run has completed on Kaggle and its checkpoint has loaded locally. The new five-seed batch requires execution on Kaggle. The web application remains to be implemented.
+**Status:** five-seed Baby results for ADRec, GRU4Rec, and SASRec+ and the Baby diffusion-step experiment are available. Shared code and Kaggle notebooks now support Baby, Beauty, and MovieLens-100K; five-seed ADRec results are available for all three datasets. Results are organized by model and dataset under `results/<model>/<dataset>/`. See [multi-dataset training](docs/MULTI_DATASET_TRAINING.md). The web application remains to be implemented.
 
 Start with the [shared-code walkthrough](docs/SHARED_CODE_GUIDE.md).
 

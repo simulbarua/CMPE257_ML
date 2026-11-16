@@ -1,5 +1,7 @@
 # ADRec Kaggle experiments
 
+For Baby, Beauty, and MovieLens-100K selection, input packaging, and dataset-specific outputs, see [multi-dataset training](MULTI_DATASET_TRAINING.md). The detailed paths below describe the backward-compatible Baby workflow.
+
 Use `notebooks/adrec_kaggle.ipynb` to train seeds 42–46. Each seed runs embedding pretraining and ADRec training independently. The notebook exports the same per-seed result and CSV summary format used by the baseline experiments.
 
 ## 1. Prepare the input
@@ -30,7 +32,7 @@ A fresh batch trains all five seeds, including seed 42. It does not import the e
 
 Full mode uses all 11,761 users, 4,731 products, hidden size 128, 32 diffusion steps, training and evaluation batch sizes 512, and up to 500 epochs per stage with early stopping. `configs/shared.json` fixes the data checksum, sequence length, metric cutoffs, and evaluation batch size. `configs/kaggle.json` supplies the training settings. The loop sets the selected seed in both stage configurations.
 
-For a pipeline check, set `RUN_MODE = 'smoke'`. This uses nine users, hidden size 16, four diffusion steps, and two epochs per stage. Smoke results are saved under `smoke_results/adrec/` and are rejected when mixed with full results.
+For a pipeline check, set `RUN_MODE = 'smoke'`. This uses nine users, hidden size 16, four diffusion steps, and two epochs per stage. Smoke results are saved under `smoke_results/adrec/<dataset>/` and are rejected when mixed with full results.
 
 ## 3. Run the training loop
 
@@ -46,13 +48,13 @@ To recover from an interruption in the same session, rerun the training cell. Co
 
 ## 4. Inspect the CSV files
 
-`results/adrec/adrec_baby_runs.csv` uses these columns:
+`results/adrec/baby/adrec_baby_runs.csv` uses these columns:
 
 ```text
 run_id,model,dataset,seed,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
 ```
 
-`results/adrec/adrec_baby_summary.csv` uses:
+`results/adrec/baby/adrec_baby_summary.csv` uses:
 
 ```text
 model,dataset,n_runs,seeds,statistic,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
@@ -68,7 +70,7 @@ Download these files from `/kaggle/working` before ending the session:
 
 | Archive | Local destination | Contents |
 |---|---|---|
-| `adrec_results.zip` | `results/adrec/` | Per-seed JSON/text metadata, CSVs, experiment record, checkpoint hashes, and pretraining metadata |
+| `adrec_results.zip` | `results/adrec/<dataset>/` | Per-seed JSON/text metadata, CSVs, experiment record, checkpoint hashes, and pretraining metadata |
 | `adrec_full_seed42.zip` through `adrec_full_seed46.zip` | `checkpoints/adrec_full_seed<N>/` | The selected seed's complete `pretrain/` and `adrec/` output folders, including weights |
 
 Each result export contains `adrec_seed<N>_results.json`, `adrec_seed<N>_config.json`, `adrec_seed<N>_history.json`, `adrec_seed<N>_environment.json`, `adrec_seed<N>_requirements-lock.txt`, and `adrec_seed<N>_checkpoints.json`. Pretraining metadata is under `pretrain/`. For compatibility with the baseline layout, `environment.json` and `requirements-lock.txt` are copies from the lowest listed seed; per-seed files preserve all environments.
@@ -105,11 +107,12 @@ These are explicit runner differences from upstream:
 
 - Seed 42 is read from the shared configuration (upstream YAML defaults to 2025).
 - Checkpoints, environment records, resume support, and history-only inference are added. A checkpoint is selected even if all initial metrics are zero. Short runs get final-epoch validation if no scheduled validation occurred.
-- Saved best models are evaluated in evaluation mode, avoiding dropout during test inference. Final ADRec sampling uses the recorded seed; it is stochastic, so this does not imply bitwise equality with an upstream run's random stream.
+- Saved best models are evaluated in evaluation mode, as in the normal upstream path (the upstream best model is copied after `eval()`). Final ADRec sampling resets to the recorded seed, unlike the upstream continuing random stream; trained scores need not match.
 - During ADRec alignment the runner clears the frozen embedding's gradient before stepping. The upstream PCGrad wrapper can assign zero gradients even to frozen parameters, allowing Adam weight decay to change them. This adjustment enforces the intended freeze. Early stopping cannot prevent the fine-tuning phase from starting.
 - An explicit checkpoint path replaces the upstream hard-coded pretraining path. The architecture and embedding initialization are unchanged.
 
 Metric parity on identical scores is already covered by the shared tests. Equal metric code does not establish exact paper reproduction or equal trained scores. Record any new settings and compare completed full runs fairly.
+
 
 ## Diffusion-step comparison
 

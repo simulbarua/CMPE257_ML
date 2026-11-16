@@ -88,7 +88,8 @@ class ExperimentTests(unittest.TestCase):
         return {**EXPORTS, "make_config": make_config, "train": train,
                 "RUN_MODE": "full", "SEEDS": seeds, "RESUME_ROOT": resume_root,
                 "WORK_ROOT": work, "RUNS_ROOT": work / "runs",
-                "RESULTS_DIR": work / "results/adrec", "DATASET_PATH": "unused"}
+                "ARCHIVE_ROOT": work, "DATASET": "baby",
+                "RESULTS_DIR": work / "results/adrec/baby", "DATASET_PATH": "unused"}
 
     def test_direct_loop_sets_both_seeds_and_reuses_completed_stages(self):
         fixtures = {seed: self.fixture(seed) for seed in range(42, 47)}

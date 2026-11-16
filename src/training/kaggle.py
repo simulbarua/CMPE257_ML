@@ -19,6 +19,7 @@ import yaml
 
 from src.data import SequenceDataset, load_dataset
 from src.data.load import dataset_summary
+from src.data.catalog import dataset_spec
 from src.data.torch_adapter import make_loader
 from src.evaluation import evaluate
 from src.models.gru4rec import GRU4Rec
@@ -30,7 +31,7 @@ if str(UPSTREAM) not in sys.path:
     sys.path.insert(0, str(UPSTREAM))
 
 
-def make_config(model, mode="smoke"):
+def make_config(model, mode="smoke", dataset="baby"):
     """All notebooks start from the same versioned settings."""
     if model not in {"adrec", "pretrain", "sasrec", "gru4rec"}:
         raise ValueError("Unknown model")
@@ -38,6 +39,11 @@ def make_config(model, mode="smoke"):
         raise ValueError("mode must be smoke or full")
     cfg = json.loads((ROOT / "configs/shared.json").read_text())
     cfg.update(json.loads((ROOT / "configs/kaggle.json").read_text()))
+    spec = dataset_spec(dataset)
+    cfg["dataset_sha256"] = spec["sha256"]
+    # Keep legacy Baby configs byte-for-byte equivalent for resume/notebook users.
+    if dataset != "baby":
+        cfg["dataset"] = dataset
     cfg.update(model=model, mode=mode, user_limit=None, diffusion_steps=32)
     if mode == "smoke":
         cfg.update(user_limit=9, hidden_size=16, diffusion_steps=4,
@@ -48,7 +54,7 @@ def make_config(model, mode="smoke"):
 
 def _args(cfg, num_items, device):
     settings = yaml.safe_load((UPSTREAM / "config.yaml").read_text())
-    settings.update(dataset="baby", item_num=num_items, device=str(device),
+    settings.update(dataset=cfg.get("dataset", "baby"), item_num=num_items, device=str(device),
                     model=cfg["model"], max_len=cfg["max_len"],
                     hidden_size=cfg["hidden_size"],
                     diffusion_steps=cfg["diffusion_steps"],
@@ -75,7 +81,17 @@ def build_model(cfg, num_items, device, pretrained_checkpoint=None):
             # Used only when restoring a complete ADRec checkpoint below.
             model = Att_Diffuse_model(args)
         else:
-            weight = _weights(pretrained_checkpoint)["item_embedding.weight"]
+            saved = torch.load(pretrained_checkpoint, map_location="cpu", weights_only=True)
+            if "config" in saved:
+                previous = saved["config"]
+                if (previous.get("dataset", "baby") != cfg.get("dataset", "baby")
+                        or previous.get("dataset_sha256") != cfg["dataset_sha256"]):
+                    raise ValueError("Pretrained checkpoint belongs to a different dataset")
+                if previous.get("model") != "pretrain":
+                    raise ValueError("Expected an embedding-pretraining checkpoint")
+            elif cfg.get("dataset", "baby") != "baby":
+                raise ValueError("New datasets require pretrained checkpoint dataset metadata")
+            weight = (saved["model_state"] if "model_state" in saved else saved)["item_embedding.weight"]
             if tuple(weight.shape) != (num_items + 1, cfg["hidden_size"]):
                 raise ValueError("Pretrained embedding vocabulary/dimension mismatch")
 
