@@ -29,6 +29,25 @@ Removing warm-up left HR@20 nearly unchanged (+0.0029 percentage points) and sli
 
 See the [saved comparison](results/adrec_warmup_ablation/baby/accuracy_summary.csv), [report discussion](docs/MULTI_DATASET_TRAINING.md#report-section-baby-warm-up-ablation), and [Kaggle notebook](notebooks/adrec_warmup_ablation_kaggle.ipynb). Model checkpoints remain outside Git.
 
+## Baby pretrained-embedding comparison
+
+We trained ten fresh ADRec models using the authors' released Baby embeddings: seeds 42–46 with either five or zero warm-up epochs. All runs used the same released embedding checkpoint and 32 diffusion steps. No embedding pretraining was repeated. The table compares these runs with our earlier results; project values are mean ± sample standard deviation in percentage units.
+
+| Embedding source | Warm-up epochs | HR@20 | NDCG@20 |
+|---|---:|---:|---:|
+| Our embeddings | 5 | 6.2568 ± 0.2446 | 2.9065 ± 0.0509 |
+| Authors' embeddings | 5 | 6.5715 ± 0.0599 | 2.9499 ± 0.0307 |
+| Our embeddings | 0 | 6.2597 ± 0.2379 | 2.8847 ± 0.0440 |
+| Authors' embeddings | 0 | 6.5513 ± 0.2072 | 2.9131 ± 0.0862 |
+| Paper | 5 | 7.1524 | 3.1455 |
+| Paper | 0 | 6.7507 | 2.9535 |
+
+With five warm-up epochs, the authors' embeddings improved average HR@20 by 0.3148 percentage points (5.03% relative) and NDCG@20 by 0.0434 points (1.49% relative). Both improved in four of five seeds, although average NDCG@5 decreased. With the authors' embeddings, warm-up added only 0.0202 points to HR@20 and 0.0368 points to NDCG@20; both improved in three of five seeds. This was a smaller benefit than the paper reported, and our scores remained below its corresponding results. Published values are from [Table 4](https://arxiv.org/html/2505.19544v1#S4.SS4), which does not report standard deviations.
+
+The new runs use one fixed pretrained checkpoint, while our earlier runs pretrained embeddings separately for each seed. Our training implementation also retains its documented differences from the released code. These results support a modest benefit from this released checkpoint under our setup, but do not identify pretraining as the sole cause of the gap from the paper.
+
+See the [comparison results](results/adrec_author_embeddings/baby/accuracy_summary.csv), [report discussion](docs/MULTI_DATASET_TRAINING.md#report-section-baby-pretrained-embedding-comparison), and [Kaggle notebook](notebooks/adrec_author_embeddings_kaggle.ipynb).
+
 ## Structure
 
 | Folder | Purpose |

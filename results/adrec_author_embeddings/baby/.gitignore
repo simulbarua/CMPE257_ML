@@ -1,0 +1,3 @@
+# Duplicate reference records and full runtime inventories stay in local archives.
+/baseline/
+/authors_warmup*/adrec_seed*_requirements-lock.txt

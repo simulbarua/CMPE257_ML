@@ -1,0 +1,15 @@
+{
+  "dataset": "baby",
+  "upstream_commit": "0a30ef764cd85efa44f884a387198e9bf28c7d4c",
+  "source_url": "https://raw.githubusercontent.com/Nemo-1024/ADRec/0a30ef764cd85efa44f884a387198e9bf28c7d4c/src/saved/pretrain/baby/pretrain.pth",
+  "repository_path": "src/saved/pretrain/baby/pretrain.pth",
+  "git_blob_sha1": "d287de01e78ab0476949e560fb20604772158fe3",
+  "sha256": "de2917937cbc0c48f9e0e2f90108270e88d73b2f0fd59156b8b25b4fbd856331",
+  "size_bytes": 4051570,
+  "dataset_sha256": "bf8f3485f9e36763e07f0234e0ddb479cb023358797615388a36f0d7238cea99",
+  "state_key": "item_embedding.weight",
+  "embedding_shape": [4732, 128],
+  "dtype": "torch.float32",
+  "pretraining_seed": null,
+  "note": "Original released state dictionary, unchanged. It has no training configuration or seed metadata. Only item_embedding.weight initializes ADRec; the backbone is initialized afresh for each downstream seed. All ten runs reuse this same checkpoint."
+}

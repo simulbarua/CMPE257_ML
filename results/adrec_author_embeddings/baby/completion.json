@@ -1,0 +1,63 @@
+{
+  "expected_seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "expected_warmups": [
+    5,
+    0
+  ],
+  "completed_runs": [
+    {
+      "seed": 42,
+      "warmup_epochs": 0
+    },
+    {
+      "seed": 42,
+      "warmup_epochs": 5
+    },
+    {
+      "seed": 43,
+      "warmup_epochs": 0
+    },
+    {
+      "seed": 43,
+      "warmup_epochs": 5
+    },
+    {
+      "seed": 44,
+      "warmup_epochs": 0
+    },
+    {
+      "seed": 44,
+      "warmup_epochs": 5
+    },
+    {
+      "seed": 45,
+      "warmup_epochs": 0
+    },
+    {
+      "seed": 45,
+      "warmup_epochs": 5
+    },
+    {
+      "seed": 46,
+      "warmup_epochs": 0
+    },
+    {
+      "seed": 46,
+      "warmup_epochs": 5
+    }
+  ],
+  "paired_seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "complete": true
+}
