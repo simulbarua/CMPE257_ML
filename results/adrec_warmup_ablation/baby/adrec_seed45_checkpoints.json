@@ -1,0 +1,9 @@
+{
+  "seed": 45,
+  "pretrained_sha256": "b5d892f2fbd02017cdf2f308a663f7ddcb6e456a2917f2a3dfa237e486bdc735",
+  "location": "checkpoints/adrec_warmup_ablation/baby/adrec_warmup0_seed45",
+  "files": {
+    "best.pt": "089c3d879a840e8f9e64a95e0e5e169f86d9c0bf8ef821bb3fc2a75145b03c23",
+    "latest.pt": "f217769c580de1b3399f625b9dca34bb023bb3d8b9c48962d6a8d86b6ccfdd8b"
+  }
+}

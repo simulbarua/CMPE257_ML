@@ -29,3 +29,13 @@ All launch notebooks accept `DATASET = 'baby'`, `'beauty'`, or `'ml-100k'`. All 
 Each dataset needs its own trained weights. The optional diffusion notebook requires that dataset’s completed baseline and pretraining checkpoints; it does not require repeating the completed Baby experiment.
 
 Result folders are `results/adrec/<dataset>/`, `results/gru4rec/<dataset>/`, and `results/sasrec/<dataset>/`. Extract each model result ZIP into its dataset folder. The existing `results/adrec_diffusion_steps/` folder stays separate and unchanged.
+
+## Baby warm-up ablation
+
+[adrec_warmup_ablation_kaggle.ipynb](adrec_warmup_ablation_kaggle.ipynb) trains fresh ADRec models for seeds 42–46 with `warmup_epochs = 0`. Each run reuses the exact saved pretrained embeddings from its matching Baby baseline. The full-run configuration otherwise stays unchanged, including 32 diffusion steps. No embedding pretraining is repeated.
+
+Attach the private input `adrec_baby_warmup0_inputs.zip`, which includes the source bundle, Baby dataset, five pretraining checkpoints, and original baseline metadata. Import the notebook, enable Internet and one GPU, and run all cells. The default `RUN_FULL = True` runs a one-epoch smoke check before the five full runs; `False` runs only the smoke check. The check verifies that embeddings update from epoch zero.
+
+Download `adrec_baby_warmup0_results.zip` and `adrec_baby_warmup0_models.zip` from `/kaggle/working/exports/`. Extract results into `results/adrec_warmup_ablation/baby/` and model runs into `checkpoints/adrec_warmup_ablation/baby/`. Completed seeds are reused, and incomplete runs resume from `latest.pt`. For a new session, attach the extracted model archive and set `RESUME_ROOT` to the folder containing `adrec_warmup0_seed<N>/`.
+
+The comparison reports mean and sample standard deviation over matching completed seeds, plus per-seed differences in percentage points. Original baseline scores are reused as recorded. Paper Table 4 values are included separately as references. The documented training implementation differences still apply. All five full ablation runs are complete; see the [results](../results/adrec_warmup_ablation/baby/accuracy_summary.csv) and [report discussion](../docs/MULTI_DATASET_TRAINING.md#report-section-baby-warm-up-ablation).
