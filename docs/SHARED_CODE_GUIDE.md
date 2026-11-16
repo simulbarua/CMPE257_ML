@@ -2,9 +2,9 @@
 
 This repository supplies common infrastructure, local model checks, and Kaggle training launchers. The ADRec notebook imports these modules from a local source ZIP attached to Kaggle. See [Kaggle training](KAGGLE_TRAINING.md) for setup and stage-by-stage instructions. No GPU is required for the core checks.
 
-## 1. `configs/shared.json` — agree on settings
+## 1. Shared settings and dataset selection
 
-Contains the exact released Baby file checksum, maximum sequence length (50), seed, metric cutoffs, and evaluation batch size. Read this file in each notebook; do not independently change split definitions. The dataset is attached separately to Kaggle and its path is passed explicitly.
+`configs/shared.json` contains the released Baby file checksum, maximum sequence length (50), seed, metric cutoffs, and evaluation batch size. `configs/datasets.json` records the checksums and counts for Baby, Beauty, and MovieLens-100K. The notebooks use `make_config(model, mode, dataset=DATASET)` to select the dataset while retaining shared training and evaluation settings. Keep the released split definitions. The dataset is attached separately to Kaggle and its path is passed explicitly. The examples below use Baby.
 
 ## 2. `src/data/load.py` — read and check the data
 
@@ -47,7 +47,7 @@ batch = next(iter(loader))
 print(batch['input_ids'].shape)  # (128, 50)
 ```
 
-The notebook is the launcher. The imported Python modules are downloaded from GitHub along with the notebook's supporting code.
+The notebook is the launcher. It imports the Python modules from the source bundle attached as a Kaggle input.
 
 ## 5. `src/evaluation/upstream_metrics.py` — original HR/NDCG
 
@@ -62,7 +62,7 @@ Supply `predict(histories, masks)` returning a tensor shaped `[batch, 4732]` for
 ```python
 from src.evaluation import evaluate
 test = SequenceDataset(data, 'test', cfg['max_len'])
-# After implementing the trained-model predict adapter:
+# With a predict(histories, masks) callback for the trained model:
 # report = evaluate(test, predict, num_items=4731,
 #                   batch_size=cfg['evaluation_batch_size'], ks=cfg['metric_ks'])
 ```
@@ -80,12 +80,12 @@ python -m scripts.check_shared_pipeline --dataset data/baby/dataset.pkl
 
 The first checks small examples with known answers. The second verifies the pinned real file and constructs every train/val/test example. It does not train a model. Run from the repository root.
 
-## Next steps and ownership
+## Model ownership
 
-- Anusha: review data examples and use this loader in the GRU4Rec integration.
-- Mahalakshmi: review metrics and connect SASRec+ scores to `evaluate`.
-- Simul: connect ADRec's training stages and score output to these interfaces.
-- Together: verify one batch per model before full Kaggle runs.
+- Simul: ADRec training, diffusion-step experiments, and ADRec inference integration.
+- Anusha: SASRec+ training and data preparation checks.
+- Mahalakshmi: GRU4Rec training, evaluation coordination, and the web interface.
+- All members: review shared-code changes, compare model results, test the demo, and write the report.
 
 The shared training launcher now lives in `src/training/kaggle.py`, with the ADRec notebook under `notebooks/`. The seed loop and result exports are defined directly in the ADRec notebook and call the shared `train()` function.
 

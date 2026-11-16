@@ -1,6 +1,6 @@
 # Web demo
 
-Implement after a trained ADRec checkpoint is available. Load the model once at startup and use inference mode. Accept validated example histories in the existing item-ID vocabulary; never include the target in the history.
+The web demo is planned; trained ADRec checkpoints are available locally under `checkpoints/`. Load the selected model once at startup and use inference mode. Accept validated example histories in that model's dataset-specific item-ID vocabulary; never include the target in the history.
 
 Proposed shared interface: `recommend(history_item_ids, k)` returns ranked item IDs and scores. Treat scores as model scores, not probabilities unless explicitly calibrated.
 

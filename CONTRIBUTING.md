@@ -1,15 +1,15 @@
 # Team workflow
 
-Use your own GitHub account and Git author identity. Collaborator access must be granted by the repository owner after confirming account names.
+Use your own GitHub account and Git author identity.
 
-1. Pick an issue and make a short-lived task branch from current `main`, e.g. `simul/adrec-training`, `anusha/gru4rec-training`, or `mahalakshmi/sasrec-training`.
+1. Pick an issue and make a short-lived task branch from current `main`, e.g. `simul/adrec-training`, `anusha/sasrec-training`, or `mahalakshmi/gru4rec-training`.
 2. Make small, focused commits. Do not upload datasets, weights, credentials, or notebook secrets.
 3. Run a small validation appropriate to the change and record the outcome.
 4. Push your branch and open a pull request linking the issue with `Closes #NUMBER`.
 5. Ask another member to review it. Address feedback before merging.
 6. Update your local `main` and delete the merged task branch.
 
-Keep `main` runnable once implementation exists. Do not merge failing code. One teammate approval is a team rule; it is not currently enforced by repository protection settings. Coordinate before editing shared data/evaluation code.
+Keep `main` runnable. Do not merge failing code. Obtain one teammate's approval before merging and coordinate before editing shared data/evaluation code.
 
 ## Pull request evidence
 
