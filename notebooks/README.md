@@ -39,3 +39,21 @@ Attach the private input `adrec_baby_warmup0_inputs.zip`, which includes the sou
 Download `adrec_baby_warmup0_results.zip` and `adrec_baby_warmup0_models.zip` from `/kaggle/working/exports/`. Extract results into `results/adrec_warmup_ablation/baby/` and model runs into `checkpoints/adrec_warmup_ablation/baby/`. Completed seeds are reused, and incomplete runs resume from `latest.pt`. For a new session, attach the extracted model archive and set `RESUME_ROOT` to the folder containing `adrec_warmup0_seed<N>/`.
 
 The comparison reports mean and sample standard deviation over matching completed seeds, plus per-seed differences in percentage points. Original baseline scores are reused as recorded. Paper Table 4 values are included separately as references. The documented training implementation differences still apply. All five full ablation runs are complete; see the [results](../results/adrec_warmup_ablation/baby/accuracy_summary.csv) and [report discussion](../docs/MULTI_DATASET_TRAINING.md#report-section-baby-warm-up-ablation).
+
+## Baby authors' embedding comparison
+
+[adrec_author_embeddings_kaggle.ipynb](adrec_author_embeddings_kaggle.ipynb) runs ten new ADRec experiments: seeds 42–46 with `warmup_epochs = 5` and `0`, all using one fixed authors' pretrained Baby checkpoint and 32 diffusion steps. Each backbone starts fresh. No pretraining, baseline training, or diffusion-step experiment is repeated. Historical project results provide the other two conditions in a four-condition comparison.
+
+The original checkpoint comes from [the pinned official Baby release](https://github.com/Nemo-1024/ADRec/blob/0a30ef764cd85efa44f884a387198e9bf28c7d4c/src/saved/pretrain/baby/pretrain.pth). Its file hashes, embedding dimensions, and provenance are recorded in `configs/author_baby_embeddings.json`. Store it locally as `checkpoints/author_embeddings/baby/pretrain.pth`. The file contains no pretraining seed metadata; do not assign it a seed based on the downstream run.
+
+Build the upload bundle from the repository root:
+
+```bash
+python -m scripts.package_author_embeddings
+```
+
+This requires the pinned checkpoint, `data/baby/dataset.pkl`, and the existing Baby results for both project warm-up settings. It writes `work/author_embeddings_upload/adrec_baby_author_embeddings_inputs.zip` and a copy of the notebook. The ZIP includes the source, dataset, authors' checkpoint, and historical result metadata. Upload only this input ZIP as a private Kaggle dataset, import the notebook, and attach that dataset. Enable Internet and a GPU, then run all cells. `RUN_FULL = True` runs two six-epoch, nine-user smoke checks before all ten full runs; `False` runs only the smoke checks.
+
+Download both archives from `/kaggle/working/exports/`. Extract `adrec_baby_author_embeddings_results.zip` into `results/adrec_author_embeddings/baby/`, and `adrec_baby_author_embeddings_models.zip` into `checkpoints/adrec_author_embeddings/baby/`. The model archive contains ten run folders named `authors_warmup<W>_seed<S>`. Attach those folders and set `RESUME_ROOT` to their parent to resume in another Kaggle session. Completed runs are reused and incomplete runs resume from `latest.pt`.
+
+Summaries compare the same paired seeds in all four conditions. The new runs hold pretrained embeddings fixed across seeds, while the historical project runs also varied pretraining. Their variability therefore has different sources. This experiment tests the released checkpoint under our existing trainer; it does not guarantee paper-level reproduction or isolate all differences in pretraining procedures. The shared training code and completed results remain unchanged. All ten full runs are complete. See the [comparison results](../results/adrec_author_embeddings/baby/accuracy_summary.csv) and [report discussion](../docs/MULTI_DATASET_TRAINING.md#report-section-baby-pretrained-embedding-comparison).

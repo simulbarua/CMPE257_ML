@@ -1,0 +1,10 @@
+{
+  "seed": 45,
+  "warmup_epochs": 5,
+  "pretrained_sha256": "de2917937cbc0c48f9e0e2f90108270e88d73b2f0fd59156b8b25b4fbd856331",
+  "location": "checkpoints/adrec_author_embeddings/baby/authors_warmup5_seed45",
+  "files": {
+    "best.pt": "1a77adf17bc51edceb38b632250cf06149d5294580ff681bed84691642a5f5ea",
+    "latest.pt": "89468140c7cae15681a64c56238695c1caa8828370e9d5900acac342b3d107df"
+  }
+}
