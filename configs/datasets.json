@@ -1,0 +1,50 @@
+{
+  "upstream_commit": "0a30ef764cd85efa44f884a387198e9bf28c7d4c",
+  "datasets": {
+    "baby": {
+      "label": "Baby",
+      "sha256": "bf8f3485f9e36763e07f0234e0ddb479cb023358797615388a36f0d7238cea99",
+      "source_url": "https://raw.githubusercontent.com/Nemo-1024/ADRec/0a30ef764cd85efa44f884a387198e9bf28c7d4c/datasets/data/baby/dataset.pkl",
+      "summary": {
+        "users": 11761,
+        "unique_items": 4731,
+        "max_item_id": 4731,
+        "interactions": {
+          "train": 69301,
+          "val": 11761,
+          "test": 11761
+        }
+      }
+    },
+    "beauty": {
+      "label": "Beauty",
+      "sha256": "a2f6ca22b3efe2bc5030ef9a7c4f6c928db2086771d58d9a40147e660f574bc1",
+      "source_url": "https://raw.githubusercontent.com/Nemo-1024/ADRec/0a30ef764cd85efa44f884a387198e9bf28c7d4c/datasets/data/beauty/dataset.pkl",
+      "summary": {
+        "users": 10553,
+        "unique_items": 6086,
+        "max_item_id": 6086,
+        "interactions": {
+          "train": 73042,
+          "val": 10553,
+          "test": 10553
+        }
+      }
+    },
+    "ml-100k": {
+      "label": "MovieLens-100K",
+      "sha256": "dfc5dfaa7950d1a85af4fd6bb168c38efc8213092a9f72563c6d75ab00cef8d0",
+      "source_url": "https://raw.githubusercontent.com/Nemo-1024/ADRec/0a30ef764cd85efa44f884a387198e9bf28c7d4c/datasets/data/ml-100k/dataset.pkl",
+      "summary": {
+        "users": 938,
+        "unique_items": 1008,
+        "max_item_id": 1008,
+        "interactions": {
+          "train": 52537,
+          "val": 938,
+          "test": 938
+        }
+      }
+    }
+  }
+}

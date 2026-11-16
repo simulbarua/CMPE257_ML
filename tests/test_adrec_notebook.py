@@ -88,6 +88,7 @@ class ExperimentTests(unittest.TestCase):
         return {**EXPORTS, "make_config": make_config, "train": train,
                 "RUN_MODE": "full", "SEEDS": seeds, "RESUME_ROOT": resume_root,
                 "WORK_ROOT": work, "RUNS_ROOT": work / "runs",
+                "ARCHIVE_ROOT": work, "DATASET": "baby",
                 "RESULTS_DIR": work / "results/adrec", "DATASET_PATH": "unused"}
 
     def test_direct_loop_sets_both_seeds_and_reuses_completed_stages(self):

@@ -1,5 +1,7 @@
 # ADRec Kaggle experiments
 
+For Baby, Beauty, and MovieLens-100K selection, input packaging, and dataset-specific outputs, see [multi-dataset training](MULTI_DATASET_TRAINING.md). The detailed paths below describe the backward-compatible Baby workflow.
+
 Use `notebooks/adrec_kaggle.ipynb` to train seeds 42–46. Each seed runs embedding pretraining and ADRec training independently. The notebook exports the same per-seed result and CSV summary format used by the baseline experiments.
 
 ## 1. Prepare the input
@@ -105,11 +107,12 @@ These are explicit runner differences from upstream:
 
 - Seed 42 is read from the shared configuration (upstream YAML defaults to 2025).
 - Checkpoints, environment records, resume support, and history-only inference are added. A checkpoint is selected even if all initial metrics are zero. Short runs get final-epoch validation if no scheduled validation occurred.
-- Saved best models are evaluated in evaluation mode, avoiding dropout during test inference. Final ADRec sampling uses the recorded seed; it is stochastic, so this does not imply bitwise equality with an upstream run's random stream.
+- Saved best models are evaluated in evaluation mode, as in the normal upstream path (the upstream best model is copied after `eval()`). Final ADRec sampling resets to the recorded seed, unlike the upstream continuing random stream; trained scores need not match.
 - During ADRec alignment the runner clears the frozen embedding's gradient before stepping. The upstream PCGrad wrapper can assign zero gradients even to frozen parameters, allowing Adam weight decay to change them. This adjustment enforces the intended freeze. Early stopping cannot prevent the fine-tuning phase from starting.
 - An explicit checkpoint path replaces the upstream hard-coded pretraining path. The architecture and embedding initialization are unchanged.
 
 Metric parity on identical scores is already covered by the shared tests. Equal metric code does not establish exact paper reproduction or equal trained scores. Record any new settings and compare completed full runs fairly.
+
 
 ## Diffusion-step comparison
 

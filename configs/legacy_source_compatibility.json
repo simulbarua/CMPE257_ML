@@ -1,0 +1,11 @@
+{
+  "migrations": [
+    {
+      "dataset": "baby",
+      "path": "src/training/kaggle.py",
+      "before": "5e71101e9065efc37f4740269dc6675b0d205a61ba254995b73b789eed0a9330",
+      "after": "40cb23681aae9dd67443cc9897f4f266ac553027a713eba5626e6651470f3ec9",
+      "reason": "Dataset selection and pretrained-checkpoint identity validation; legacy Baby config, training math, and evaluation are unchanged. Covered by legacy config, resume, real-checkpoint inference, and old/new training parity checks."
+    }
+  ]
+}

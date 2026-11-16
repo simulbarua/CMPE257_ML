@@ -1,9 +1,9 @@
-# ADRec training notebook
+# Kaggle training notebooks
 
 [adrec_kaggle.ipynb](adrec_kaggle.ipynb) sweeps seeds 42–46 directly in notebook cells through embedding pretraining, ADRec alignment, fine-tuning, test evaluation, and result export. The training cell calls the existing shared `train()` function; export functions are defined in the notebook.
 
 1. Build the upload bundle with `python3 -m scripts.package_kaggle --dataset data/baby/dataset.pkl`.
-2. Attach the updated code ZIP and Baby dataset to Kaggle.
+2. Attach the updated code ZIP and selected dataset to Kaggle; set `DATASET` in the setup cell.
 3. Import the notebook, enable Internet and a GPU, and run the numbered sections in order.
 4. Download `adrec_results.zip` and each completed seed's checkpoint ZIP.
 
@@ -18,3 +18,12 @@ See [the training instructions](../docs/KAGGLE_TRAINING.md) for the CSV format, 
 Attach the current code bundle, `dataset.pkl`, and `adrec_all_results_and_models.zip` from the completed five-seed experiment. The notebook supports intact ZIPs and the documented extracted layouts. Run `RUN_MODE = 'smoke'` first to check inputs; use `RUN_MODE = 'full'` for the experiment. Full and smoke outputs are separate.
 
 Download `adrec_diffusion_results_full.zip` and `adrec_diffusion_models_full.zip`. Place the extracted results in `results/adrec_diffusion_steps/` and model runs in `checkpoints/adrec_diffusion_steps/`. The notebook explains checkpoint validation, resume, timing scope, and the small-step noise-schedule adjustment.
+
+## Dataset selection and baseline launchers
+
+All launch notebooks accept `DATASET = 'baby'`, `'beauty'`, or `'ml-100k'`. Baby keeps its original paths. New datasets use separate run/result folders and archives. See [multi-dataset training](../docs/MULTI_DATASET_TRAINING.md) for inputs, paths, and compatibility details.
+
+- [GRU4Rec](mahalakshmi_gru4rec_kaggle.ipynb) retains the existing seed-42 run and remaining-seed loop.
+- [SASRec+](sasrec_kaggle.ipynb) provides the same workflow using the retained SASRec+ implementation.
+
+Each dataset needs its own trained weights. The optional diffusion notebook requires that dataset’s completed baseline and pretraining checkpoints; it does not require repeating the completed Baby experiment.

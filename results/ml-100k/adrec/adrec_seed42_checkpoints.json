@@ -1,0 +1,10 @@
+{
+  "seed": 42,
+  "location": "runs/adrec_full_seed42",
+  "files": {
+    "pretrain/best.pt": "113105393e858943999cb715e27ac712793af3a87595deda720dc235cc96874f",
+    "pretrain/latest.pt": "9453639efc006880a4c7760605ce8820d83e96fab324339d6c3ad1c2e3c7180c",
+    "adrec/best.pt": "87b72bc9c9df4f5cc67e7e2e825df312de55a63f8fd7519e4fac17d8de1574da",
+    "adrec/latest.pt": "e32850cad2a6d89fe06e42ef2c92e866bbde04264ad923d6eb0ae37bfbdaa556"
+  }
+}

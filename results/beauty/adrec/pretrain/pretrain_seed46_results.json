@@ -1,0 +1,19 @@
+{
+  "model": "pretrain",
+  "mode": "full",
+  "users": 10553,
+  "dataset": {
+    "users": 10553,
+    "unique_items": 6086,
+    "max_item_id": 6086,
+    "interactions": {
+      "train": 73042,
+      "val": 10553,
+      "test": 10553
+    }
+  },
+  "best_epoch": 45,
+  "early_stopped": true,
+  "epochs_completed": 66,
+  "test": null
+}
