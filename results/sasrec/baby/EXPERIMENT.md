@@ -61,4 +61,3 @@
     92,613. Users and items match.
   - The repo's loader holds out each user's last items, rather than using the paper's 8:1:1
     user split.
-  - Only one dataset (Baby) was run.
