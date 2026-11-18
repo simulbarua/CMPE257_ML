@@ -1,0 +1,9 @@
+{
+  "dataset": "beauty",
+  "seed": 45,
+  "location": "/kaggle/working/runs/beauty/sasrec_full_seed45/sasrec",
+  "files": {
+    "best.pt": "0a92ae6e64175bd08f4cf4b6a613d0c95dd804aec72d1072eb74aeaa0a82c247",
+    "latest.pt": "fae5123801119d10b86dcde1188ba9b9b9a00e1d57046d9aedc048f23b125e73"
+  }
+}

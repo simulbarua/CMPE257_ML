@@ -1,0 +1,6 @@
+run_id,model,dataset,seed,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+sasrec_full_seed42,SASRec+,Beauty,42,45,66,8.0149,10.8353,14.875,5.7456,6.6478,7.6641
+sasrec_full_seed43,SASRec+,Beauty,43,40,61,7.9532,11.0197,15.3586,5.6635,6.6566,7.7502
+sasrec_full_seed44,SASRec+,Beauty,44,45,66,7.9295,11.3155,15.2156,5.7223,6.8185,7.8044
+sasrec_full_seed45,SASRec+,Beauty,45,40,61,7.6598,10.7618,15.0669,5.5421,6.5432,7.627
+sasrec_full_seed46,SASRec+,Beauty,46,50,71,7.9117,10.8311,14.8234,5.7077,6.6525,7.6588
