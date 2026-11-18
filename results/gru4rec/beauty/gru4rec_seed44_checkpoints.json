@@ -1,0 +1,9 @@
+{
+  "dataset": "beauty",
+  "seed": 44,
+  "location": "/kaggle/working/runs/beauty/mahalakshmi_gru4rec_full_seed44/gru4rec",
+  "files": {
+    "best.pt": "88a4a3e93d1b88e224e0f78b1c0e1f12698369d63406702420de3efa40891cfa",
+    "latest.pt": "287cb128e678d5c099b868e6cbf5e0c17d5c0b1597851132548638eb54e40a0c"
+  }
+}
