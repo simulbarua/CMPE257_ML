@@ -1,0 +1,9 @@
+{
+  "dataset": "ml-100k",
+  "seed": 43,
+  "location": "/kaggle/working/runs/ml-100k/sasrec_full_seed43/sasrec",
+  "files": {
+    "best.pt": "9634f988f16833f8520742ae95f0806ec5ce1ee17d971bb53524cd46b3ceb828",
+    "latest.pt": "70fbed2abbc28de33cf3fbd803bf4fb69b52dde7942735dd60a702348d71cc49"
+  }
+}

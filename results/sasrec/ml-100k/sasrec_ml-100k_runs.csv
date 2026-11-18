@@ -1,0 +1,6 @@
+run_id,model,dataset,seed,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+sasrec_full_seed42,SASRec+,MovieLens-100K,42,115,136,6.8612,11.0828,20.1337,4.0777,5.417,7.715
+sasrec_full_seed43,SASRec+,MovieLens-100K,43,125,146,7.1936,11.4744,21.3647,4.1888,5.5529,8.0217
+sasrec_full_seed44,SASRec+,MovieLens-100K,44,90,111,6.1973,12.0997,19.9581,3.9548,5.8535,7.8069
+sasrec_full_seed45,SASRec+,MovieLens-100K,45,110,131,6.6846,11.6885,18.7055,4.3313,5.9267,7.6812
+sasrec_full_seed46,SASRec+,MovieLens-100K,46,125,146,6.2555,10.8884,18.4144,4.089,5.5738,7.4733
