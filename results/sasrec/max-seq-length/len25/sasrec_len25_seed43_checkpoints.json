@@ -1,0 +1,10 @@
+{
+  "dataset": "ml-100k",
+  "max_len": 25,
+  "seed": 43,
+  "location": "/kaggle/working/runs/ml-100k/len25/sasrec_full_len25_seed43/sasrec",
+  "files": {
+    "best.pt": "5b89e78168156dfcb88356df224a67f56d4243df98b1400ffcea9d93282c4a02",
+    "latest.pt": "b2f0ba4cb75c71847e73344dc84a1766b2edb75f9c5e05fff2227f2f25807a6e"
+  }
+}
