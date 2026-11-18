@@ -1,0 +1,3 @@
+model,dataset,n_runs,seeds,statistic,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+GRU4Rec,Beauty,5,42-46,mean,2.8748,4.5488,7.0133,1.8925,2.4307,3.0502
+GRU4Rec,Beauty,5,42-46,"std (sample, n-1)",0.0847,0.2043,0.3117,0.0707,0.0869,0.1165

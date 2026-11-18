@@ -1,0 +1,6 @@
+run_id,model,dataset,seed,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+mahalakshmi_gru4rec_full_01,GRU4Rec,MovieLens-100K,42,50,71,2.1897,4.4959,9.1082,1.3036,2.0433,3.1926
+mahalakshmi_gru4rec_full_seed43,GRU4Rec,MovieLens-100K,43,60,81,2.2874,4.124,7.2903,1.4218,2.0018,2.8191
+mahalakshmi_gru4rec_full_seed44,GRU4Rec,MovieLens-100K,44,65,86,2.1897,4.4376,7.3691,1.4028,2.136,2.873
+mahalakshmi_gru4rec_full_seed45,GRU4Rec,MovieLens-100K,45,90,111,2.6968,4.6912,9.0697,1.5458,2.1818,3.2896
+mahalakshmi_gru4rec_full_seed46,GRU4Rec,MovieLens-100K,46,65,86,2.463,4.8283,8.7373,1.4211,2.1816,3.1697
