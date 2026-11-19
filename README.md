@@ -114,7 +114,7 @@ For a UI-only check, `python -m app.server --fake` uses the local Baby dataset a
 | `results/` | Metrics, summaries, configurations, histories, and experiment records |
 | `checkpoints/` | Local weights; actual weights are ignored |
 | `app/` | Web demo |
-| `docs/` | Task plan, decisions, and experiment notes |
+| `docs/` | Training guides, evaluation details, and experiment notes |
 
 ## Sources and attribution
 
