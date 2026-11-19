@@ -1,0 +1,12 @@
+{
+  "dataset": "ml-100k",
+  "max_len": 10,
+  "seed": 45,
+  "location": "/kaggle/working/runs/ml-100k/len10/adrec_full_len10_seed45",
+  "files": {
+    "pretrain/best.pt": "9da9278009a52e2c5a2daad88d0c894a22ccf4958ba84fd36af7d985103df8ae",
+    "pretrain/latest.pt": "6d919ad00c8dd1eb8463cd280ef4010ad747fb9aeb9adb3a0398017256078319",
+    "adrec/best.pt": "0daf67cb9d96164b4da1a8171b1435b44071cfe0a6a23b0c5fd10f01fbe9383c",
+    "adrec/latest.pt": "44c723a4eb810a5dc5d7a79994c962ac47e25c90e8e2994c991a6caf55ab1b57"
+  }
+}

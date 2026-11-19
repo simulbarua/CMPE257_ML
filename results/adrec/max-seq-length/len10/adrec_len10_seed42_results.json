@@ -1,0 +1,31 @@
+{
+  "model": "adrec",
+  "mode": "full",
+  "users": 938,
+  "dataset": {
+    "users": 938,
+    "unique_items": 1008,
+    "max_item_id": 1008,
+    "interactions": {
+      "train": 52537,
+      "val": 938,
+      "test": 938
+    }
+  },
+  "best_epoch": 75,
+  "early_stopped": true,
+  "epochs_completed": 96,
+  "test": {
+    "users": 938,
+    "protocol": "adrec_upstream",
+    "units": "percent",
+    "metrics": {
+      "HR@5": 5.6292,
+      "NDCG@5": 3.6956,
+      "HR@10": 9.911,
+      "NDCG@10": 5.0633,
+      "HR@20": 16.7327,
+      "NDCG@20": 6.7631
+    }
+  }
+}
