@@ -1,0 +1,31 @@
+{
+  "model": "gru4rec",
+  "mode": "full",
+  "users": 938,
+  "dataset": {
+    "users": 938,
+    "unique_items": 1008,
+    "max_item_id": 1008,
+    "interactions": {
+      "train": 52537,
+      "val": 938,
+      "test": 938
+    }
+  },
+  "best_epoch": 70,
+  "early_stopped": true,
+  "epochs_completed": 91,
+  "test": {
+    "users": 938,
+    "protocol": "adrec_upstream",
+    "units": "percent",
+    "metrics": {
+      "HR@5": 2.3062,
+      "NDCG@5": 1.5075,
+      "HR@10": 4.5541,
+      "NDCG@10": 2.2075,
+      "HR@20": 8.2095,
+      "NDCG@20": 3.1144
+    }
+  }
+}
