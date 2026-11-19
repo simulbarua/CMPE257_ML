@@ -1,0 +1,6 @@
+run_id,model,dataset,seed,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+mahalakshmi_gru4rec_full_01,GRU4Rec,Baby,42,30,51,2.0774,3.5501,6.0446,1.352,1.825,2.4512
+mahalakshmi_gru4rec_full_seed43,GRU4Rec,Baby,43,45,66,2.0434,3.5681,5.6977,1.3501,1.8382,2.3734
+mahalakshmi_gru4rec_full_seed44,GRU4Rec,Baby,44,35,56,2.2048,3.5588,5.5763,1.4255,1.8613,2.3657
+mahalakshmi_gru4rec_full_seed45,GRU4Rec,Baby,45,35,56,2.1196,3.4904,5.7901,1.414,1.8579,2.4389
+mahalakshmi_gru4rec_full_seed46,GRU4Rec,Baby,46,45,66,2.1193,3.4137,5.4931,1.3691,1.7842,2.3019

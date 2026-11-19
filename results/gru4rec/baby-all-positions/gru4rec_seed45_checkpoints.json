@@ -1,0 +1,9 @@
+{
+  "dataset": "baby",
+  "seed": 45,
+  "location": "/kaggle/working/runs/mahalakshmi_gru4rec_full_seed45/gru4rec",
+  "files": {
+    "best.pt": "dd886b7ad3927b20d0b579c6cdc90ca06b5f8acfd2c08c6b3d42db65120ba357",
+    "latest.pt": "ec17892de4a1d4e959bea66fa5d68992f913d5b2fa9f9305316086cea3e9f005"
+  }
+}

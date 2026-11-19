@@ -52,6 +52,18 @@ def make_config(model, mode="smoke", dataset="baby"):
     return cfg
 
 
+def _target_mode(cfg):
+    """GRU4Rec trains on the final target by default. Setting
+    cfg["gru4rec_targets"] = "all" (extra experiment) trains every position,
+    like SASRec+ and ADRec. Other configs are unchanged."""
+    if cfg["model"] != "gru4rec":
+        return "per_token"
+    targets = cfg.get("gru4rec_targets", "last")
+    if targets not in ("last", "all"):
+        raise ValueError("gru4rec_targets must be last or all")
+    return "per_token" if targets == "all" else "last"
+
+
 def _args(cfg, num_items, device):
     settings = yaml.safe_load((UPSTREAM / "config.yaml").read_text())
     settings.update(dataset=cfg.get("dataset", "baby"), item_num=num_items, device=str(device),
@@ -188,7 +200,7 @@ def train(cfg, dataset_path, output_dir, *, pretrained_checkpoint=None,
     limit = cfg["user_limit"]
     data = {s: rows[:limit] for s, rows in full.items()} if limit else full
     datasets = {s: SequenceDataset(data, s, cfg["max_len"],
-                target_mode="last" if cfg["model"] == "gru4rec" else "per_token") for s in data}
+                target_mode=_target_mode(cfg)) for s in data}
     loader = make_loader(datasets["train"], cfg["train_batch_size"], shuffle=True, seed=cfg["seed"])
     output = Path(output_dir).resolve()
     output.mkdir(parents=True, exist_ok=True)
@@ -247,7 +259,10 @@ def train(cfg, dataset_path, output_dir, *, pretrained_checkpoint=None,
             x, y = batch["input_ids"].to(device), batch["labels"].to(device)
             wrapped.zero_grad()
             result = model(x, y, train_flag=True)
-            ce = model.calculate_loss(result[1] if cfg["model"] == "gru4rec" else result[0], y)
+            if cfg["model"] == "gru4rec" and cfg.get("gru4rec_targets") == "all":
+                ce = model.calculate_loss_all_positions(result[0], x, y)
+            else:
+                ce = model.calculate_loss(result[1] if cfg["model"] == "gru4rec" else result[0], y)
             losses = [ce]
             dif = result[2] if cfg["model"] == "adrec" else torch.zeros((), device=device)
             if cfg["model"] == "adrec" and args.loss == "mse":

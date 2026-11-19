@@ -45,3 +45,22 @@ class GRU4Rec(nn.Module):
     def calculate_loss(self, representation, targets):
         # RecBole CE trains the final next-item target, not per-token CE.
         return self.loss_fct(self.calculate_score(representation), targets[:, -1])
+
+    def align_to_input(self, packed_out, item_seq):
+        """Move outputs from the packed (real items first) order back to the
+        left-padded input positions, so position t lines up with labels[:, t].
+        A GRU reads left to right, so each output depends only on its item and
+        the items before it: training every position = training every prefix."""
+        seq_len = item_seq.size(1)
+        lengths = (item_seq > 0).sum(1)
+        positions = torch.arange(seq_len, device=item_seq.device).unsqueeze(0)
+        index = (positions - (seq_len - lengths).unsqueeze(1)).clamp(min=0)
+        index = index.unsqueeze(-1).expand(-1, -1, packed_out.size(-1))
+        return packed_out.gather(1, index)  # padding positions are masked by labels == 0
+
+    def calculate_loss_all_positions(self, packed_out, item_seq, labels):
+        """Extra experiment: CE on every real position (RecBole-style prefix
+        augmentation) instead of only the final target."""
+        aligned = self.align_to_input(packed_out, item_seq)
+        mask = labels > 0
+        return self.loss_fct(self.calculate_score(aligned[mask]), labels[mask])
