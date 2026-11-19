@@ -1,0 +1,3 @@
+model,dataset,max_len,n_runs,seeds,statistic,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+ADRec,ml-100k,25,5,42-46,mean,6.3376,11.3418,19.5744,3.9408,5.5541,7.6131
+ADRec,ml-100k,25,5,42-46,"std (sample, n-1)",0.4576,0.6797,0.9992,0.3409,0.3943,0.3778
