@@ -1,18 +1,6 @@
-# CMPE257 — ADRec project
+# ADRec in Practice: Reproduction, Evaluation, and Extensions
 
-Team: Simul Barua, Anusha, and Mahalakshmi.
-
-This project implements and evaluates ADRec using the authors' code. We compare ADRec, GRU4Rec, and SASRec+ on Amazon Baby, Amazon Beauty, and MovieLens-100K. Simul trains ADRec, Anusha trains SASRec+, and Mahalakshmi trains GRU4Rec. Our extensions study diffusion steps, warm-up, pretrained embeddings, and maximum sequence length. A local web demo serves recommendations from a trained checkpoint.
-
-## Start here
-
-1. Read [team tasks](docs/TASKS.md) and [contribution workflow](CONTRIBUTING.md).
-2. Read the [evaluation protocol](evaluation/PROTOCOL.md) and [dataset settings](docs/MULTI_DATASET_TRAINING.md) before running experiments.
-3. Follow the [Kaggle training guide](docs/KAGGLE_TRAINING.md) to run the ADRec experiments with the pinned upstream models.
-
-**Status:** five-seed results are available for all three models on all three datasets, plus the Baby diffusion-step, warm-up, and pretrained-embedding experiments and the MovieLens-100K sequence-length experiments. The local web demo is implemented. Results and metadata are stored under `results/`; datasets and model weights remain outside Git.
-
-Start with the [shared-code walkthrough](docs/SHARED_CODE_GUIDE.md).
+This project implements and evaluates ADRec using the authors' code. We compare ADRec, GRU4Rec, and SASRec+ on Amazon Baby, Amazon Beauty, and MovieLens-100K. Our extensions study diffusion steps, warm-up, pretrained embeddings, and maximum sequence length. A local web demo serves recommendations from a trained checkpoint.
 
 ## Model comparison across datasets
 
