@@ -47,9 +47,8 @@
   epochs 51-66.
 - Training and inference timing methodology: Each full run took under 5 minutes (approximate;
   wall-clock time was not measured precisely). Inference timing was not measured.
-- Checkpoint location and checksum: best.pt for each seed is stored in a Google Drive folder
-  (https://drive.google.com/drive/u/3/folders/1lcLe9a7Z9HIP1IjamJvzN8-1g4kTg1gZ), named by
-  seed. Weights are not committed to Git. SHA-256 of each best.pt as downloaded from Kaggle:
+- Checkpoint location and checksum: Weights are not committed to Git. The SHA-256
+  hash of each best.pt, as downloaded from Kaggle, is listed here:
   - seed 42: E573DA8643851F425D5899042424B715DA60EBD5560933D043C19AB6FC66FF3E
   - seed 43: D52AFFE8B0C2B6047ACEF15D085DDFC3B725378FA8FA30BE01D23D09C8BC7254
   - seed 44: D31FFC463C06C813D9559CB2316A49E7BE3CF253AC323F74149293C7DF185C3B
