@@ -1,0 +1,9 @@
+{
+  "dataset": "ml-100k",
+  "seed": 42,
+  "location": "/kaggle/working/runs/ml-100k/mahalakshmi_gru4rec_full_01/gru4rec",
+  "files": {
+    "best.pt": "928bbd2f85b0e90744414ef59fa636dc6c4d6e1cb7e9e345d03311f4f8781452",
+    "latest.pt": "884528d102caab65d5a9f2ccadf9dbae0db44079436c112f97d7b287a70316b3"
+  }
+}

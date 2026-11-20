@@ -1,0 +1,6 @@
+run_id,model,dataset,seed,best_epoch,epochs_completed,HR@5,HR@10,HR@20,NDCG@5,NDCG@10,NDCG@20
+mahalakshmi_gru4rec_full_01,GRU4Rec,Beauty,42,70,91,6.3214,9.1384,12.6243,4.2877,5.1889,6.0648
+mahalakshmi_gru4rec_full_seed43,GRU4Rec,Beauty,43,70,91,5.9409,8.7377,12.6826,4.0966,4.9973,5.9887
+mahalakshmi_gru4rec_full_seed44,GRU4Rec,Beauty,44,85,106,5.782,8.5948,12.3173,3.9856,4.8905,5.8323
+mahalakshmi_gru4rec_full_seed45,GRU4Rec,Beauty,45,70,91,6.0416,8.5526,12.8204,4.2218,5.0273,6.1049
+mahalakshmi_gru4rec_full_seed46,GRU4Rec,Beauty,46,75,96,5.9705,9.0082,12.894,4.2884,5.2631,6.2459
