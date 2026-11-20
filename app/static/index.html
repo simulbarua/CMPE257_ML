@@ -10,7 +10,7 @@
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--ink);
          font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
-  main { max-width:760px; margin:0 auto; padding:32px 16px 48px; }
+  main { max-width:1000px; margin:0 auto; padding:32px 16px 48px; }
   h1 { font-size:1.6rem; margin:0 0 4px; }
   .sub { color:var(--muted); margin:0 0 24px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:12px;
@@ -36,6 +36,9 @@
   .rank { color:var(--muted); width:2.5em; display:inline-block; }
   .score { color:var(--muted); font-variant-numeric:tabular-nums; }
   .meta { color:var(--muted); font-size:.85rem; margin-top:12px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; }
+  .grid h3 { margin:0 0 8px; font-size:1rem; }
+  .shared { background:var(--accent-soft); border-radius:4px; }
   .error { background:var(--err-soft); color:var(--err); border-radius:8px; padding:10px 12px; }
   .note { color:var(--muted); font-size:.8rem; }
   @media (max-width:520px) { .row { flex-direction:column; align-items:stretch; }
@@ -51,6 +54,10 @@
     <label for="example">Choose an example shopper</label>
     <select id="example"></select>
     <p class="hint">Shows only items the shopper already interacted with. The hidden next item is never included.</p>
+
+    <label for="model">Model</label>
+    <select id="model"></select>
+    <p class="hint">Choose one model, or compare all of them on the same history.</p>
 
     <label for="history">Purchase history (item IDs, oldest → newest)</label>
     <textarea id="history" spellcheck="false"></textarea>
@@ -80,7 +87,10 @@ function showHistory(ids) {
 async function init() {
   try {
     const info = await (await fetch("/api/info")).json();
-    $("sub").textContent = `Model: ${info.model} · Dataset: ${info.dataset} · ${info.num_items} items`;
+    $("sub").textContent = `Dataset: ${info.dataset} · ${info.num_items} items`;
+    const opts = info.models.map(m => `<option value="${m.name}">${m.label}</option>`);
+    if (info.models.length > 1) opts.push(`<option value="all">Compare all</option>`);
+    $("model").innerHTML = opts.join("");
     examples = info.examples;
     $("example").innerHTML = examples.map((e, i) =>
       `<option value="${i}">${e.label} (${e.history.length} items)</option>`).join("");
@@ -110,16 +120,24 @@ async function recommend() {
   try {
     const res = await fetch("/api/recommend", {
       method: "POST", headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({history, k: Number($("k").value)})
+      body: JSON.stringify({history, k: Number($("k").value), model: $("model").value})
     });
     const body = await res.json();
     if (!res.ok) throw new Error(body.error || "Request failed");
-    out.innerHTML = `
-      <label>Top ${body.items.length} recommendations</label>
-      <ol>${body.items.map((it, i) => `<li><span><span class="rank">${i + 1}.</span>Item ${it.item_id}</span>
-        <span class="score">${it.score.toFixed(3)}</span></li>`).join("")}</ol>
-      <p class="meta">Based on the last ${body.history_used.length} items ·
-        model time ${body.latency_ms} ms</p>`;
+    const results = body.results;
+    const counts = {};
+    results.forEach(r => r.items.forEach(it => counts[it.item_id] = (counts[it.item_id] || 0) + 1));
+    const list = r => `<ol>${r.items.map((it, i) => {
+        const shared = results.length > 1 && counts[it.item_id] > 1 ? " class='shared'" : "";
+        return `<li${shared}><span><span class="rank">${i + 1}.</span>Item ${it.item_id}</span>
+          <span class="score">${it.score.toFixed(3)}</span></li>`;
+      }).join("")}</ol>
+      <p class="meta">Last ${r.history_used} items · model time ${r.latency_ms} ms</p>`;
+    out.innerHTML = results.length === 1
+      ? `<label>${results[0].label}: top ${results[0].items.length}</label>${list(results[0])}`
+      : `<label>Top ${results[0].items.length} by model</label>
+         <p class="hint">Highlighted items appear in more than one model's list.</p>
+         <div class="grid">${results.map(r => `<div><h3>${r.label}</h3>${list(r)}</div>`).join("")}</div>`;
   } catch (e) {
     out.innerHTML = `<div class="error">${e.message}</div>`;
   } finally {
