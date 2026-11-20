@@ -4,27 +4,27 @@ This project implements and evaluates ADRec using the authors' code. We compare 
 
 ## Model comparison across datasets
 
-All nine model–dataset combinations have five completed runs (seeds 42–46). Each dataset has its own trained models and item vocabulary. The table shows test HR@20 and NDCG@20 as percentages, with mean ± sample standard deviation. These are the original maximum-length-50 runs; ADRec uses our per-seed pretrained embeddings and 32 diffusion steps. Each model link opens its saved summary, including the other evaluation cutoffs.
+All nine model–dataset combinations have five completed runs (seeds 42–46). Each dataset has its own trained models and item vocabulary. The table shows test HR@20 and NDCG@20 as percentages, with mean ± sample standard deviation. These are the maximum-length-50 runs; ADRec uses our per-seed pretrained embeddings and 32 diffusion steps, and GRU4Rec is trained on every position of each history (see [GRU4Rec training targets](#gru4rec-training-targets)). Each model link opens its saved summary, including the other evaluation cutoffs.
 
 | Dataset | Model | HR@20 | NDCG@20 |
 |---|---|---:|---:|
 | Baby | [ADRec](results/adrec/baby/adrec_baby_summary.csv) | 6.2568 ± 0.2446 | 2.9065 ± 0.0509 |
 | Baby | [SASRec+](results/sasrec/baby/sasrec_baby_summary.csv) | 5.5902 ± 0.2868 | 2.5217 ± 0.0766 |
-| Baby | [GRU4Rec](results/gru4rec/baby/gru4rec_baby_summary.csv) | 3.4234 ± 0.1495 | 1.3139 ± 0.0499 |
+| Baby | [GRU4Rec](results/gru4rec/baby-all-positions/gru4rec_baby_all_positions_summary.csv) | 5.7204 ± 0.2138 | 2.3862 ± 0.0606 |
 | Beauty | [ADRec](results/adrec/beauty/adrec_beauty_summary.csv) | 15.4262 ± 0.1223 | 8.0214 ± 0.0727 |
 | Beauty | [SASRec+](results/sasrec/beauty/sasrec_beauty_summary.csv) | 15.0679 ± 0.2255 | 7.7009 ± 0.0737 |
-| Beauty | [GRU4Rec](results/gru4rec/beauty/gru4rec_beauty_summary.csv) | 7.0133 ± 0.3117 | 3.0502 ± 0.1165 |
+| Beauty | [GRU4Rec](results/gru4rec/beauty-all-positions/gru4rec_beauty_all_positions_summary.csv) | 12.6677 ± 0.2233 | 6.0473 ± 0.1523 |
 | MovieLens-100K | [ADRec](results/adrec/ml-100k/adrec_ml-100k_summary.csv) | 21.4280 ± 0.5306 | 8.0441 ± 0.3419 |
 | MovieLens-100K | [SASRec+](results/sasrec/ml-100k/sasrec_ml-100k_summary.csv) | 19.7153 ± 1.1902 | 7.7396 ± 0.1994 |
-| MovieLens-100K | [GRU4Rec](results/gru4rec/ml-100k/gru4rec_ml-100k_summary.csv) | 8.3149 ± 0.9113 | 3.0688 ± 0.2091 |
+| MovieLens-100K | [GRU4Rec](results/gru4rec/ml-100k-all-positions/gru4rec_ml-100k_all_positions_summary.csv) | 19.8903 ± 0.5413 | 8.1398 ± 0.1609 |
 
-ADRec has the highest mean HR@20 and NDCG@20 among our three implementations on each dataset. Its relative gains over SASRec+ are smaller on Beauty and MovieLens-100K than on Baby. These comparisons describe our runs, not a claim of statistical significance. The shared evaluator uses the released per-user holdout splits, full catalog scoring, and the upstream batch-mean HR/NDCG calculation. Our GRU4Rec adapter and documented training differences limit direct comparisons with the paper. See the [evaluation protocol](evaluation/PROTOCOL.md) and [implementation limitations](docs/MULTI_DATASET_TRAINING.md#report-section-differences-and-limitations).
+ADRec has the highest mean HR@20 on each dataset. On MovieLens-100K, GRU4Rec has a slightly higher mean NDCG@20 (8.1398 vs. 8.0441), a difference smaller than the seed-to-seed spread. ADRec's gains over SASRec+ are smaller on Beauty and MovieLens-100K than on Baby. These comparisons describe our runs, not a claim of statistical significance. The shared evaluator uses the released per-user holdout splits, full catalog scoring, and the upstream batch-mean HR/NDCG calculation. Our GRU4Rec is based on RecBole v1.2.0; its original last-target-only runs are kept in `results/gru4rec/{baby,beauty,ml-100k}`. See the [evaluation protocol](evaluation/PROTOCOL.md) and [implementation limitations](docs/MULTI_DATASET_TRAINING.md#report-section-differences-and-limitations).
 
 ## MovieLens-100K maximum sequence length
 
 We retrained ADRec, SASRec+, and GRU4Rec with maximum sequence lengths of 10 and 25 for seeds 42–46, then compared them with their existing length-50 baselines. The limit applies during both training and evaluation; ADRec embedding pretraining was also repeated at each length. This measures the effect of changing the training setup, rather than shortening inputs to one fixed trained model.
 
-The table shows five-seed means in percent. Full summaries include sample standard deviations: [ADRec](results/adrec/max-seq-length/adrec_ml-100k_history_length_summary.csv), [SASRec+](results/sasrec/max-seq-length/sasrec_ml-100k_history_length_summary.csv), and [GRU4Rec](results/gru4rec/max-seq-length/gru4rec_ml-100k_history_length_summary.csv).
+The table shows five-seed means in percent. Full summaries include sample standard deviations: [ADRec](results/adrec/max-seq-length/adrec_ml-100k_history_length_summary.csv), [SASRec+](results/sasrec/max-seq-length/sasrec_ml-100k_history_length_summary.csv), and [GRU4Rec](results/gru4rec/max-seq-length-all-positions/gru4rec_ml-100k_history_length_summary.csv).
 
 | Model | Maximum length | HR@20 | NDCG@20 |
 |---|---:|---:|---:|
@@ -34,13 +34,28 @@ The table shows five-seed means in percent. Full summaries include sample standa
 | SASRec+ | 10 | 15.7856 | 6.0174 |
 | SASRec+ | 25 | 18.2024 | 6.9458 |
 | SASRec+ | 50 (baseline) | 19.7153 | 7.7396 |
-| GRU4Rec | 10 | 7.5019 | 2.9115 |
-| GRU4Rec | 25 | 8.2405 | 3.0903 |
-| GRU4Rec | 50 (baseline) | 8.3149 | 3.0688 |
+| GRU4Rec | 10 | 16.0168 | 6.1186 |
+| GRU4Rec | 25 | 21.1536 | 8.0437 |
+| GRU4Rec | 50 (baseline) | 19.8903 | 8.1398 |
 
-For ADRec and SASRec+, both top-20 metrics increased as the maximum length increased from 10 to 25 to 50. GRU4Rec's HR@20 also increased, while its NDCG@20 was slightly higher at length 25 than at 50. The experiment covers only MovieLens-100K and does not establish the same pattern for the Amazon datasets. Length 50 comes from the original run set, not a new run in the sequence-length notebooks.
+For ADRec and SASRec+, both top-20 metrics increased as the maximum length increased from 10 to 25 to 50. GRU4Rec (all-position training) was highest at length 25 on both metrics (HR@20 21.1536 vs. 19.8903 at length 50), and at length 25 its HR@20 exceeded ADRec's (19.5744). ADRec had the highest HR@20 at lengths 10 and 50, but at length 10 its difference from GRU4Rec is smaller than the seed-to-seed spread (ADRec ± 1.6575). The experiment covers only MovieLens-100K and does not establish the same pattern for the Amazon datasets. Length 50 comes from the original run set, not a new run in the sequence-length notebooks. The original last-target-only GRU4Rec length results are in `results/gru4rec/max-seq-length`.
 
 Run details and notebooks: [ADRec](notebooks/adrec_maximum_sequence_length_kaggle.ipynb), [SASRec+](notebooks/sasrec_maximum_sequence_length_kaggle.ipynb), [GRU4Rec](notebooks/gru4rec_maximum_sequence_length_kaggle.ipynb).
+
+## GRU4Rec training targets
+
+Our first GRU4Rec runs trained on one target per user: the last training item of each history. SASRec+ and ADRec train on every position. We added an experiment that trains GRU4Rec on every position too, which for a GRU is the same as treating each prefix of a history as a training example. As far as we know, RecBole's own data pipeline augments sequences this way; we did not verify that against its data code. Model, data, evaluation, and other settings are unchanged. The main tables above use the all-position runs.
+
+| Dataset | Training targets | HR@20 | NDCG@20 |
+|---|---|---:|---:|
+| Baby | Last only | 3.4234 ± 0.1495 | 1.3139 ± 0.0499 |
+| Baby | All positions | 5.7204 ± 0.2138 | 2.3862 ± 0.0606 |
+| Beauty | Last only | 7.0133 ± 0.3117 | 3.0502 ± 0.1165 |
+| Beauty | All positions | 12.6677 ± 0.2233 | 6.0473 ± 0.1523 |
+| MovieLens-100K | Last only | 8.3149 ± 0.9113 | 3.0688 ± 0.2091 |
+| MovieLens-100K | All positions | 19.8903 ± 0.5413 | 8.1398 ± 0.1609 |
+
+All-position training raised GRU4Rec's HR@20 on every dataset. The gain was largest on MovieLens-100K, where histories are longest. Paper values for GRU4Rec HR@20 are 5.4576 (Baby), 12.6462 (Beauty), and 18.6858 (MovieLens-100K). Run details are in `results/gru4rec/{baby,beauty,ml-100k}-all-positions/`.
 
 ## Baby diffusion-step experiment
 
