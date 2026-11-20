@@ -1,0 +1,10 @@
+{
+  "dataset": "ml-100k",
+  "max_len": 25,
+  "seed": 44,
+  "location": "/kaggle/working/runs/ml-100k/len25/gru4rec_full_len25_seed44",
+  "files": {
+    "gru4rec/best.pt": "a6be3a553eca3dbefd04e8671abd82e2c357bdc49918dab52af7523bb21e107c",
+    "gru4rec/latest.pt": "7c7810c69b16bedd70d30c4c927eef9bd1e7a59794bde8eda0d3f2cb887597f9"
+  }
+}
