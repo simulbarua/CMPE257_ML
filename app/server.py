@@ -1,11 +1,14 @@
-"""Web demo: recommend next items from a shopper's history.
+"""Web demo: recommend next items from a shopper's history with one or more models.
 
 Run from the repository root:
-    python -m app.server --checkpoint checkpoints/baby/best.pt --data data/baby/dataset.pkl
+    python -m app.server --model adrec=checkpoints/baby/best.pt \
+        --model sasrec=checkpoints/baby/sasrec_best.pt \
+        --model gru4rec=checkpoints/baby/gru4rec_best.pt
 
-Then open http://localhost:8000. Uses only the Python standard library for the
-web server; the model itself needs the shared requirements (PyTorch).
-`--fake` serves random scores so the page can be tried without a model.
+Then open http://localhost:8000 and choose a model, or "Compare all".
+`--fake` serves random scores for all three models so the page can be tried
+without checkpoints. Uses only the Python standard library for the web server;
+the models themselves need the shared requirements (PyTorch).
 """
 import argparse
 import json
@@ -19,29 +22,35 @@ from src.data.load import load_dataset
 
 PAGE = Path(__file__).with_name("static") / "index.html"
 MAX_K = 50
+LABELS = {"adrec": "ADRec", "sasrec": "SASRec+", "gru4rec": "GRU4Rec"}
 
 
 class Recommender:
-    """Loads the model once at startup and ranks the full item catalog."""
+    """Loads one model once at startup and ranks the full item catalog."""
 
-    def __init__(self, checkpoint, num_items, fake=False):
-        self.num_items, self.fake = num_items, fake
+    def __init__(self, name, checkpoint, num_items, dataset, fake=False):
+        self.name, self.num_items, self.fake = name, num_items, fake
+        self.label = LABELS.get(name, name)
         if fake:
-            self.model_name, self.max_len, self.seed = "fake (random scores)", 50, None
+            self.label += " (fake scores)"
+            self.max_len, self.seed = 50, None
             return
         import torch
         from src.training.kaggle import load_for_inference
         self.torch = torch
         self.model, cfg = load_for_inference(checkpoint)
-        self.model_name, self.max_len, self.seed = cfg["model"], cfg["max_len"], cfg["seed"]
-        if cfg.get("dataset", "baby") != DATASET_NAME:
-            raise ValueError(f"Checkpoint was trained on {cfg.get('dataset')}, not {DATASET_NAME}")
+        if cfg["model"] != name:
+            raise ValueError(f"{checkpoint} holds a {cfg['model']} model, not {name}")
+        if cfg.get("dataset", "baby") != dataset:
+            raise ValueError(f"{checkpoint} was trained on {cfg.get('dataset')}, not {dataset}")
+        self.max_len, self.seed = cfg["max_len"], cfg["seed"]
+        self.label = f"{self.label} (seed {self.seed})"
 
     def recommend(self, history_item_ids, k=10):
         """Ranked item IDs and model scores (not probabilities)."""
         history = list(history_item_ids)[-self.max_len:]
         if self.fake:
-            rng = random.Random(",".join(map(str, history)))
+            rng = random.Random(self.name + ",".join(map(str, history)))
             ids = rng.sample(range(1, self.num_items + 1), k)
             return [{"item_id": i, "score": round(10 - r * 0.3 + rng.random() * 0.1, 4)}
                     for r, i in enumerate(ids)]
@@ -56,20 +65,23 @@ class Recommender:
                 for s, i in zip(top.values, top.indices)]
 
 
-def parse_request(body, num_items):
+def parse_request(body, num_items, model_names):
     """Validate input; raise ValueError with a message the page can show."""
     try:
         payload = json.loads(body or b"{}")
     except json.JSONDecodeError:
         raise ValueError("Request is not valid JSON")
     history, k = payload.get("history"), payload.get("k", 10)
+    model = payload.get("model", model_names[0])
     if not isinstance(history, list) or not history:
         raise ValueError("History must contain at least one item ID")
     if any(type(i) is not int or not 1 <= i <= num_items for i in history):
         raise ValueError(f"Item IDs must be whole numbers from 1 to {num_items}")
     if type(k) is not int or not 1 <= k <= MAX_K:
         raise ValueError(f"k must be a whole number from 1 to {MAX_K}")
-    return history, k
+    if model != "all" and model not in model_names:
+        raise ValueError(f"Unknown model: {model}")
+    return history, k, model_names if model == "all" else [model]
 
 
 def pick_examples(data, count=5, min_len=5):
@@ -99,8 +111,9 @@ class Handler(BaseHTTPRequestHandler):
         if self.path in ("/", "/index.html"):
             self._send(200, PAGE.read_bytes(), "text/html; charset=utf-8")
         elif self.path == "/api/info":
-            self._send(200, {"model": RECOMMENDER.model_name, "dataset": DATASET_NAME,
-                             "num_items": RECOMMENDER.num_items, "examples": EXAMPLES})
+            self._send(200, {"dataset": DATASET_NAME, "num_items": NUM_ITEMS, "examples": EXAMPLES,
+                             "models": [{"name": r.name, "label": r.label}
+                                        for r in RECOMMENDERS.values()]})
         else:
             self._send(404, {"error": "Not found"})
 
@@ -109,31 +122,60 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(404, {"error": "Not found"})
         body = self.rfile.read(int(self.headers.get("Content-Length") or 0))
         try:
-            history, k = parse_request(body, RECOMMENDER.num_items)
+            history, k, names = parse_request(body, NUM_ITEMS, list(RECOMMENDERS))
         except ValueError as error:
             return self._send(400, {"error": str(error)})
-        start = time.perf_counter()
-        items = RECOMMENDER.recommend(history, k)
-        latency = (time.perf_counter() - start) * 1000
-        self._send(200, {"items": items, "latency_ms": round(latency, 1),
-                         "history_used": history[-RECOMMENDER.max_len:]})
+        results = []
+        for name in names:
+            recommender = RECOMMENDERS[name]
+            start = time.perf_counter()
+            items = recommender.recommend(history, k)
+            latency = (time.perf_counter() - start) * 1000
+            results.append({"model": name, "label": recommender.label, "items": items,
+                            "latency_ms": round(latency, 1),
+                            "history_used": len(history[-recommender.max_len:])})
+        self._send(200, {"results": results})
+
+
+def parse_models(values):
+    models = {}
+    for value in values:
+        name, sep, path = value.partition("=")
+        if not sep or name not in LABELS or not path:
+            raise SystemExit(f"--model must look like adrec=PATH, sasrec=PATH or gru4rec=PATH (got {value})")
+        models[name] = path
+    return models
 
 
 def main():
-    global RECOMMENDER, EXAMPLES, DATASET_NAME
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--checkpoint", default="checkpoints/baby/best.pt")
+    global RECOMMENDERS, EXAMPLES, DATASET_NAME, NUM_ITEMS
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--model", action="append", default=[], metavar="NAME=PATH",
+                        help="a model to serve; repeat for several (default adrec=checkpoints/baby/best.pt)")
+    parser.add_argument("--checkpoint", help="shortcut for --model adrec=PATH")
     parser.add_argument("--dataset-name", default="baby", choices=["baby", "beauty", "ml-100k"])
     parser.add_argument("--data", default="data/baby/dataset.pkl")
     parser.add_argument("--port", type=int, default=8000)
-    parser.add_argument("--fake", action="store_true", help="random scores, no model needed")
+    parser.add_argument("--fake", action="store_true", help="random scores for all three models")
     args = parser.parse_args()
     DATASET_NAME = args.dataset_name
     spec = dataset_spec(DATASET_NAME)
     data = load_dataset(args.data, spec["sha256"])
     EXAMPLES = pick_examples(data)
-    RECOMMENDER = Recommender(args.checkpoint, spec["summary"]["max_item_id"], args.fake)
-    print(f"Serving {RECOMMENDER.model_name} on {DATASET_NAME} at http://localhost:{args.port}")
+    NUM_ITEMS = spec["summary"]["max_item_id"]
+    if args.fake:
+        models = {name: None for name in LABELS}
+    else:
+        models = parse_models(args.model)
+        if args.checkpoint:
+            models.setdefault("adrec", args.checkpoint)
+        if not models:
+            models = {"adrec": "checkpoints/baby/best.pt"}
+    RECOMMENDERS = {name: Recommender(name, path, NUM_ITEMS, DATASET_NAME, args.fake)
+                    for name, path in models.items()}
+    print(f"Serving {', '.join(r.label for r in RECOMMENDERS.values())} on {DATASET_NAME} "
+          f"at http://localhost:{args.port}")
     ThreadingHTTPServer(("127.0.0.1", args.port), Handler).serve_forever()
 
 
