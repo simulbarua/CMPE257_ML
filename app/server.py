@@ -23,6 +23,11 @@ from src.data.load import load_dataset
 PAGE = Path(__file__).with_name("static") / "index.html"
 MAX_K = 50
 LABELS = {"adrec": "ADRec", "sasrec": "SASRec+", "gru4rec": "GRU4Rec"}
+SHOP = {"title": "What will they buy next?", "person": "shopper", "item": "Item",
+        "history": "Purchase history (item IDs, oldest → newest)", "things": "products"}
+WORDS = {"baby": SHOP, "beauty": SHOP,
+         "ml-100k": {"title": "What will they watch next?", "person": "viewer", "item": "Movie",
+                     "history": "Watch history (movie IDs, oldest → newest)", "things": "movie titles"}}
 
 
 class Recommender:
@@ -84,7 +89,7 @@ def parse_request(body, num_items, model_names):
     return history, k, model_names if model == "all" else [model]
 
 
-def pick_examples(data, count=5, min_len=5):
+def pick_examples(data, person, count=5, min_len=5):
     """Placeholder examples: visible test-time history only (train + val).
     The held-out test target is never included. Replace with the team's
     validated example list when it is available."""
@@ -92,7 +97,7 @@ def pick_examples(data, count=5, min_len=5):
     for user, train in enumerate(data["train"]):
         history = train + data["val"][user]
         if len(history) >= min_len:
-            examples.append({"label": f"Shopper #{user}", "history": history[-20:]})
+            examples.append({"label": f"{person.capitalize()} #{user}", "history": history[-20:]})
         if len(examples) == count:
             break
     return examples
@@ -111,7 +116,8 @@ class Handler(BaseHTTPRequestHandler):
         if self.path in ("/", "/index.html"):
             self._send(200, PAGE.read_bytes(), "text/html; charset=utf-8")
         elif self.path == "/api/info":
-            self._send(200, {"dataset": DATASET_NAME, "num_items": NUM_ITEMS, "examples": EXAMPLES,
+            self._send(200, {"dataset": spec_label(), "num_items": NUM_ITEMS, "examples": EXAMPLES,
+                             "words": WORDS[DATASET_NAME],
                              "models": [{"name": r.name, "label": r.label}
                                         for r in RECOMMENDERS.values()]})
         else:
@@ -135,6 +141,10 @@ class Handler(BaseHTTPRequestHandler):
                             "latency_ms": round(latency, 1),
                             "history_used": len(history[-recommender.max_len:])})
         self._send(200, {"results": results})
+
+
+def spec_label():
+    return dataset_spec(DATASET_NAME).get("label", DATASET_NAME)
 
 
 def parse_models(values):
@@ -162,7 +172,7 @@ def main():
     DATASET_NAME = args.dataset_name
     spec = dataset_spec(DATASET_NAME)
     data = load_dataset(args.data, spec["sha256"])
-    EXAMPLES = pick_examples(data)
+    EXAMPLES = pick_examples(data, WORDS[DATASET_NAME]["person"])
     NUM_ITEMS = spec["summary"]["max_item_id"]
     if args.fake:
         models = {name: None for name in LABELS}

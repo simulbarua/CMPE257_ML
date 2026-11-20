@@ -23,6 +23,15 @@ From the repository root:
 
 Options: `--dataset-name baby|beauty|ml-100k` (default `baby`), `--port 8000`.
 
+**Movies (MovieLens-100K).** The same app serves other datasets; choose one at startup. The page wording switches to movies ("What will they watch next?"). Run it on another port to show Baby and movies side by side:
+```bash
+python3 -m app.server --dataset-name ml-100k --data data/ml-100k/dataset.pkl --port 8001 \
+  --model adrec=checkpoints/ml-100k/best.pt \
+  --model sasrec=checkpoints/ml-100k/sasrec_best.pt \
+  --model gru4rec=checkpoints/ml-100k/gru4rec_best.pt
+```
+MovieLens movies are shown by their dataset IDs. The released file re-numbers movies and has no mapping back to MovieLens titles, so titles are not shown.
+
 ### Files you need locally (never committed)
 
 | File | Where to put it | Where to get it |

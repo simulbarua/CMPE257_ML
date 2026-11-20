@@ -47,19 +47,19 @@
 </head>
 <body>
 <main>
-  <h1>What will they buy next?</h1>
+  <h1 id="title">What will they buy next?</h1>
   <p class="sub" id="sub">Loading model…</p>
 
   <section class="card">
-    <label for="example">Choose an example shopper</label>
+    <label for="example">Choose an example <span class="w-person">shopper</span></label>
     <select id="example"></select>
-    <p class="hint">Shows only items the shopper already interacted with. The hidden next item is never included.</p>
+    <p class="hint">Shows only items the <span class="w-person">shopper</span> already interacted with. The hidden next item is never included.</p>
 
     <label for="model">Model</label>
     <select id="model"></select>
     <p class="hint">Choose one model, or compare all of them on the same history.</p>
 
-    <label for="history">Purchase history (item IDs, oldest → newest)</label>
+    <label for="history" id="history-label">Purchase history (item IDs, oldest → newest)</label>
     <textarea id="history" spellcheck="false"></textarea>
     <p class="hint">You can edit this list to try your own history.</p>
 
@@ -72,13 +72,14 @@
 
   <section class="card" id="out" hidden></section>
 
-  <p class="note">Item IDs come from the released dataset and do not map to product names.
+  <p class="note">IDs come from the released dataset and do not map to <span id="w-things">products</span> yet.
     Scores are model scores, not probabilities.</p>
 </main>
 
 <script>
 const $ = id => document.getElementById(id);
 let examples = [];
+let itemWord = "Item";
 
 function showHistory(ids) {
   $("history").value = ids.join(", ");
@@ -88,6 +89,13 @@ async function init() {
   try {
     const info = await (await fetch("/api/info")).json();
     $("sub").textContent = `Dataset: ${info.dataset} · ${info.num_items} items`;
+    const w = info.words;
+    itemWord = w.item;
+    document.title = w.title;
+    $("title").textContent = w.title;
+    $("history-label").textContent = w.history;
+    $("w-things").textContent = w.things;
+    document.querySelectorAll(".w-person").forEach(e => e.textContent = w.person);
     const opts = info.models.map(m => `<option value="${m.name}">${m.label}</option>`);
     if (info.models.length > 1) opts.push(`<option value="all">Compare all</option>`);
     $("model").innerHTML = opts.join("");
@@ -129,7 +137,7 @@ async function recommend() {
     results.forEach(r => r.items.forEach(it => counts[it.item_id] = (counts[it.item_id] || 0) + 1));
     const list = r => `<ol>${r.items.map((it, i) => {
         const shared = results.length > 1 && counts[it.item_id] > 1 ? " class='shared'" : "";
-        return `<li${shared}><span><span class="rank">${i + 1}.</span>Item ${it.item_id}</span>
+        return `<li${shared}><span><span class="rank">${i + 1}.</span>${itemWord} ${it.item_id}</span>
           <span class="score">${it.score.toFixed(3)}</span></li>`;
       }).join("")}</ol>
       <p class="meta">Last ${r.history_used} items · model time ${r.latency_ms} ms</p>`;
